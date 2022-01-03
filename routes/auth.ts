@@ -6,14 +6,14 @@ const {
   resetPassword,
 } = require ("../controllers/auth");
 
-const router = express.Router();
+const authRouter = express.Router();
 
-router.route("/register").post(register);
+authRouter.route("/register").post(register);
 
-router.route("/login").get(login);
+authRouter.route("/login").post(login);
 
-router.route("/forgotPassword").post(forgotPassword);
+authRouter.route("/forgotPassword").post(forgotPassword);
 
-router.route("/resetpassword/:resetToken").post(resetPassword);
+authRouter.route("/resetpassword/:resetToken").post(resetPassword);
 
-module.exports = router;
+export default authRouter;
