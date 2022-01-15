@@ -2,17 +2,20 @@ import dotenv from "dotenv";
 dotenv.config({ path: "./config.env" });
 
 import express from "express";
-import { connectDB } from "./config/db"
+import { connectDB } from "./config/db";
+import { errorHandler } from "./middlewares/error";
 
 // Routers
-import authRouter from "./routes/auth"
+import authRouter from "./routes/auth";
 
 const app = express();
-connectDB()
+connectDB();
 
 app.use(express.json());
 
 app.use("/api/auth", authRouter);
+
+app.use(errorHandler)
 
 const port = process.env.PORT;
 const server = app.listen(port, () => {
@@ -21,5 +24,5 @@ const server = app.listen(port, () => {
 
 process.on("unhandledRejection", (error, promise) => {
   console.log(`Logged Error : ${error}`);
-  server.close(() => process.exit(1))
-})
+  server.close(() => process.exit(1));
+});
