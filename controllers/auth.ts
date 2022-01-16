@@ -11,11 +11,7 @@ exports.register = async (req: Request, res: Response, next: NextFunction) => {
       email,
       password,
     });
-
-    res.status(201).json({
-      success: true,
-      data: user,
-    });
+    sendToken(user, 201, res);
   } catch (error) {
     next(error);
   }
@@ -39,10 +35,9 @@ exports.login = async (req: Request, res: Response, next: NextFunction) => {
     if (!isMatch) {
       return next(new ErrorResponse("Wrong password", 401));
     }
-    res.status(200).json({
-      success: true,
-      token: "ewfetbtgerger",
-    });
+ 
+    sendToken(user, 200, res);
+ 
   } catch (error) {
     next(error);
   }
@@ -54,4 +49,12 @@ exports.forgotPassword = (req: Request, res: Response, next: NextFunction) => {
 
 exports.resetPassword = (req: Request, res: Response, next: NextFunction) => {
   res.send("Reset password route");
+};
+
+const sendToken = (user: any, statusCode: number, res: Response) => {
+  const token = user.getSignedToken();
+  res.status(statusCode).json({
+    success:true,
+    token
+  })
 };

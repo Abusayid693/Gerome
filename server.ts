@@ -7,6 +7,7 @@ import { errorHandler } from "./middlewares/error";
 
 // Routers
 import authRouter from "./routes/auth";
+import privateRouter from "./routes/private"
 
 const app = express();
 connectDB();
@@ -14,6 +15,8 @@ connectDB();
 app.use(express.json());
 
 app.use("/api/auth", authRouter);
+app.use("/api/private/test", privateRouter);
+
 
 app.use(errorHandler)
 
