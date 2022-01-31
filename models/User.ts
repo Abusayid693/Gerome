@@ -1,4 +1,5 @@
 import mongoose, { Model, Schema } from "mongoose";
+import crypto from "crypto";
 import bcrypt from "bcryptjs";
 import { env } from "process";
 import jwt from "jsonwebtoken";
@@ -35,6 +36,7 @@ const UserSchema: Schema = new Schema<IUser>({
   resetPasswordExpire: Date,
 });
 
+// Auto save
 UserSchema.pre("save", async function (next) {
   if (!this.isModified("password")) next();
   const salt = await bcrypt.genSalt(10);
@@ -48,8 +50,19 @@ UserSchema.methods.matchPasswords = async function (password) {
 
 UserSchema.methods.getSignedToken = function () {
   return jwt.sign({ id: this._id }, env.JWT_SECRET, {
-    expiresIn: env.JWT_EXPIRE
+    expiresIn: env.JWT_EXPIRE,
   });
+};
+
+// Need the manually save the changes
+UserSchema.methods.getResetToken = async function () {
+  const resetToken = crypto.randomBytes(20).toString("hex");
+  this.resetPasswordToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+  this.resetPasswordExpire = Date.now() + 10 * (60 * 1000);
+  return resetToken;
 };
 
 export const User = mongoose.model("User", UserSchema);
