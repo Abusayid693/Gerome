@@ -6,6 +6,7 @@
     "skipLibCheck": true,
     "sourceMap": true,
     "outDir": "./dist",
+    "types": ["mocha"],
     "moduleResolution": "node",
     "removeComments": true,
     "noImplicitAny": true,
@@ -24,7 +25,7 @@
     "baseUrl": "."
   },
   "exclude": ["node_modules"],
-  "include": ["./**/*.ts"],
+  "include": ["./**/*.ts", "test/auth.test.js"],
   "rules": {
     "no-unused-vars": "off",
     "@typescript-eslint/no-unused-vars": "error"
