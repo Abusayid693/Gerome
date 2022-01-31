@@ -57,7 +57,7 @@ exports.forgotPassword = async (
       return next(new ErrorResponse("This email is not registered", 401));
     }
 
-    const resetToken = user.getResetToken();
+    const resetToken = await user.getResetToken();
 
     await user.save();
 
@@ -102,11 +102,25 @@ exports.resetPassword = async (
     .digest("hex");
 
   try {
-    const user = User.findOne({
+    const user = await User.findOne({
       resetPasswordToken,
       resetPasswordExpire: { $gt: Date.now() },
     });
-  } catch (error) {}
+
+    if (!user) {
+      return next(new ErrorResponse("Reset token invalid", 400));
+    }
+    user.password = req.body.password;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+    user.save();
+    return res.status(200).json({
+      success: true,
+      data: "Password reset success",
+    });
+  } catch (error) {
+    next(error);
+  }
 
   res.send("Reset password route");
 };
