@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import { ErrorResponse } from "../utils/errorResponse";
 import { User } from "../models/User";
-import { sendToken } from "../helpers";
+import { sendToken, sendMail } from "../helpers";
+import crypto from "crypto";
 
 exports.register = async (req: Request, res: Response, next: NextFunction) => {
   const { username, email, password } = req.body;
@@ -65,13 +66,47 @@ exports.forgotPassword = async (
     const message = `
     <h1> Reset your password now using this link : </h1>
     <a href=${resetUrl} target="_blank">${resetUrl}</a>
-    `
+    `;
 
+    try {
+      await sendMail({
+        to: email,
+        subject: "Reset your password",
+        html: message,
+      });
+
+      res.status(200).json({
+        success: true,
+        data: "Reset mail sent",
+      });
+    } catch (error) {
+      user.resetPasswordToken = undefined;
+      user.resetPasswordExpire = undefined;
+      await user.save();
+
+      return next(new ErrorResponse("Email sending error", 500));
+    }
   } catch (error) {
     next(error);
   }
 };
 
-exports.resetPassword = (req: Request, res: Response, next: NextFunction) => {
+exports.resetPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const resetPasswordToken = crypto
+    .createHash("sha256")
+    .update(req.params.resetToken)
+    .digest("hex");
+
+  try {
+    const user = User.findOne({
+      resetPasswordToken,
+      resetPasswordExpire: { $gt: Date.now() },
+    });
+  } catch (error) {}
+
   res.send("Reset password route");
 };
