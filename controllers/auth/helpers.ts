@@ -1,4 +1,3 @@
-import { Request, Response, NextFunction } from "express";
 import nodemailer from "nodemailer";
 import { env } from "process";
 
@@ -7,12 +6,9 @@ export const checkIsUserExists = (error:any)=>{
     return  (error.code === 11000) ? true : false;
 }
 
-export const sendToken = (user: any, statusCode: number, res: Response) => {
+export const getToken = (user: any) => {
   const token = user.getSignedToken();
-  res.status(statusCode).json({
-    success: true,
-    token,
-  });
+ return token
 };
 
 export const sendMail = async (mailBody: any) => {

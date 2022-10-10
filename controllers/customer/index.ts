@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import { NextFunction, Request, Response } from "express";
 import { Customers } from "../../models/Customers";
 import * as helpers from "./helpers";
 
@@ -7,8 +7,8 @@ export const addNewCustomer = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { adminId, name, phone, email, refUser } = req.body;
-
+  const { name, phone, email, refUser } = req.body;  
+  const adminId = req.user._id; 
   try {
     const customer = await Customers.create({
       adminId,
@@ -46,16 +46,12 @@ export const updateExistingCustomer = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { adminId, id, name, phone, email } = req.body;
-
-  if (!adminId && !id) {
+  const { id, name, phone, email } = req.body;
+  const adminId = req.user._id;
+  if (!id) {
     res.status(409).json({
       success: false,
       errors: [
-        {
-          field: "adminId",
-          message: "adminId is required",
-        },
         {
           field: "id",
           message: "id is required",

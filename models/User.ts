@@ -1,8 +1,8 @@
-import mongoose, { Model, Schema } from "mongoose";
-import crypto from "crypto";
 import bcrypt from "bcryptjs";
-import { env } from "process";
+import crypto from "crypto";
 import jwt from "jsonwebtoken";
+import mongoose, { Schema } from "mongoose";
+import { env } from "process";
 
 interface IUser {
   username: string;

@@ -1,8 +1,8 @@
-import { Request, Response, NextFunction } from "express";
-import { ErrorResponse } from "../utils/errorResponse";
+import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { env } from "process";
 import { User } from "../models/User";
+import { ErrorResponse } from "../utils/errorResponse";
 
 export const protect = async (
   req: Request,
@@ -22,8 +22,7 @@ export const protect = async (
   }
 
   try {
-    const decoded = jwt.verify(token, env.JWT_SECRET);
-    // @ts-ignore
+    const decoded = jwt.verify(token, env.JWT_SECRET) as { id: string };
     const user = await User.findById(decoded?.id);
 
     if (!user) {
@@ -31,7 +30,7 @@ export const protect = async (
     }
     req.user = user;
 
-    next()
+    next();
   } catch (error) {
     return next(new ErrorResponse("Unauthorized request", 401));
   }

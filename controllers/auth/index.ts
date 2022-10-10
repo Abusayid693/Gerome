@@ -1,24 +1,28 @@
-import { Request, Response, NextFunction } from "express";
-import { ErrorResponse } from "../../utils/errorResponse";
-import { User } from "../../models/User";
 import crypto from "crypto";
-
+import { NextFunction, Request, Response } from "express";
+import { Customers } from "../../models/Customers";
+import { User } from "../../models/User";
+import { ErrorResponse } from "../../utils/errorResponse";
 import * as helpers from "./helpers";
 
 exports.register = async (req: Request, res: Response, next: NextFunction) => {
   const { username, email, password } = req.body;
 
   try {
-    const user = await User.create({
+    await User.create({
       username,
       email,
       password,
     });
-    helpers.sendToken(user, 201, res);
+
+    res.status(200).json({
+      success: true,
+      data: "User successfully registered",
+    });
   } catch (error) {
     if (helpers.checkIsUserExists(error)) {
       res.status(409).json({
-        success: false, 
+        success: false,
         errors: [
           {
             field: "email",
@@ -38,20 +42,23 @@ exports.login = async (req: Request, res: Response, next: NextFunction) => {
   }
   try {
     const user = await User.findOne({ email }).select("+password");
-    console.log('user :', user)
     if (!user) {
       return next(new ErrorResponse("User not found", 404));
     }
-    console.log("user b:", user);
 
     const isMatch = await user.matchPasswords(password);
-    console.log("user :", user);
 
     if (!isMatch) {
       return next(new ErrorResponse("Wrong password", 401));
     }
 
-    helpers.sendToken(user, 200, res);
+    res.status(200).json({
+      success: true,
+      data: {
+        token: helpers.getToken(user),
+        user: { ...user.toJSON() },
+      },
+    });
   } catch (error) {
     next(error);
   }
@@ -136,4 +143,49 @@ exports.resetPassword = async (
   }
 
   res.send("Reset password route");
+};
+
+exports.removeUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { id } = req.body;
+
+  if (!id) {
+    res.status(403).json({
+      success: false,
+      errors: [
+        {
+          field: "id",
+          message: "id is required",
+        },
+      ],
+    });
+  }
+  try {
+    const user = await User.findById(id);
+
+    if (!user?._id) {
+      res.status(400).json({
+        success: true,
+        errors: [
+          {
+            field: "id",
+            message: "Invalid user",
+          },
+        ],
+      });
+    }
+
+    await Customers.deleteMany({ adminId: user?._id });
+    await user?.remove();
+
+    res.status(200).json({
+      success: true,
+      data: "User successfully deleted",
+    });
+  } catch (error) {
+    next(error);
+  }
 };
