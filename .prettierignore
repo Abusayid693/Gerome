@@ -1,0 +1,10 @@
+.cache
+.vscode
+package.json
+package-lock.json
+yarn.lock
+public
+node_modules
+dist
+.next
+client
