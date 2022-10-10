@@ -4,6 +4,7 @@ const {
   login,
   forgotPassword,
   resetPassword,
+  removeUser 
 } = require ("../controllers/auth"); 
 
 const authRouter = express.Router();
@@ -16,4 +17,6 @@ authRouter.route("/forgotPassword").post(forgotPassword);
 
 authRouter.route("/resetpassword/:resetToken").post(resetPassword);
 
+authRouter.route("/delete").delete(removeUser);
+ 
 export default authRouter;
