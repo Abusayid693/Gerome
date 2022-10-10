@@ -1,8 +1,9 @@
 import { Request, Response, NextFunction } from "express";
-import { ErrorResponse } from "../utils/errorResponse";
-import { User } from "../models/User";
-import { sendToken, sendMail } from "../helpers";
+import { ErrorResponse } from "../../utils/errorResponse";
+import { User } from "../../models/User";
 import crypto from "crypto";
+
+import * as helpers from "./helpers";
 
 exports.register = async (req: Request, res: Response, next: NextFunction) => {
   const { username, email, password } = req.body;
@@ -13,8 +14,19 @@ exports.register = async (req: Request, res: Response, next: NextFunction) => {
       email,
       password,
     });
-    sendToken(user, 201, res);
+    helpers.sendToken(user, 201, res);
   } catch (error) {
+    if (helpers.checkIsUserExists(error)) {
+      res.status(409).json({
+        success: false, 
+        errors: [
+          {
+            field: "email",
+            message: "Email already exists",
+          },
+        ],
+      });
+    }
     next(error);
   }
 };
@@ -26,6 +38,7 @@ exports.login = async (req: Request, res: Response, next: NextFunction) => {
   }
   try {
     const user = await User.findOne({ email }).select("+password");
+    console.log('user :', user)
     if (!user) {
       return next(new ErrorResponse("User not found", 404));
     }
@@ -38,7 +51,7 @@ exports.login = async (req: Request, res: Response, next: NextFunction) => {
       return next(new ErrorResponse("Wrong password", 401));
     }
 
-    sendToken(user, 200, res);
+    helpers.sendToken(user, 200, res);
   } catch (error) {
     next(error);
   }
@@ -69,7 +82,7 @@ exports.forgotPassword = async (
     `;
 
     try {
-      await sendMail({
+      await helpers.sendMail({
         to: email,
         subject: "Reset your password",
         html: message,

@@ -23,7 +23,8 @@ export const protect = async (
 
   try {
     const decoded = jwt.verify(token, env.JWT_SECRET);
-    const user = await User.findById(decoded.id);
+    // @ts-ignore
+    const user = await User.findById(decoded?.id);
 
     if (!user) {
       return next(new ErrorResponse("User not found", 404));

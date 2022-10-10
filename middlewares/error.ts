@@ -9,7 +9,7 @@ export const errorHandler = (
 ) => {
   let error = { ...err };
 
-  console.log("Error : ",err)
+  console.log("Error : ", err);
 
   error.message = err.message;
 
@@ -26,6 +26,11 @@ export const errorHandler = (
 
   res.status(error.statusCode || 500).json({
     success: false,
-    error: error.message || "Server error",
+    errors: [
+      {
+        field: "none",
+        message: error.message || "Server error",
+      },
+    ],
   });
 };

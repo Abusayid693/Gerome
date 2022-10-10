@@ -7,7 +7,7 @@
     "serve": "nodemon server.ts",
     "start": "ts-node-dev --respawn --transpile-only server.ts",
     "watch": "tsc -w",
-    "dev": "nodemon dist/index.js",
+    "dev": "nodemon dist/server.js",
     "test": "mocha"
   },
   "keywords": [],
