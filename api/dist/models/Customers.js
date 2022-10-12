@@ -28,42 +28,42 @@ const mongoose_1 = __importStar(require("mongoose"));
 const CustomersSchema = new mongoose_1.Schema({
     adminId: {
         type: mongoose_1.Schema.Types.ObjectId,
-        ref: "User",
-        required: [true, "userId is required"],
+        ref: 'User',
+        required: [true, 'userId is required']
     },
     name: {
         type: String,
-        required: [true, "name is required"],
+        required: [true, 'name is required']
     },
     email: {
         type: String,
         match: [
             /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-            "Please fill a valid email address",
+            'Please fill a valid email address'
         ],
-        default: null,
+        default: null
     },
     phone: {
         type: String,
-        default: null,
+        default: null
     },
     refUser: {
         type: mongoose_1.Schema.Types.ObjectId,
-        ref: "User",
-        default: null,
+        ref: 'User',
+        default: null
     },
     totalToTake: {
         type: Number,
-        default: 0,
+        default: 0
     },
     totalToGive: {
         type: Number,
-        default: 0,
-    },
+        default: 0
+    }
 });
 CustomersSchema.index({ userId: 1, name: 1 }, { unique: true });
 CustomersSchema.methods.ifReferencedUserPresent = async function () {
     return (await (this === null || this === void 0 ? void 0 : this.refUser)) !== null;
 };
-exports.Customers = mongoose_1.default.model("Customers", CustomersSchema);
+exports.Customers = mongoose_1.default.model('Customers', CustomersSchema);
 //# sourceMappingURL=Customers.js.map

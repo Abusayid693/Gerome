@@ -17,19 +17,19 @@ const getToken = (user) => {
 exports.getToken = getToken;
 const sendMail = async (mailBody) => {
     const trans = nodemailer_1.default.createTransport({
-        host: "smtp.ethereal.email",
+        host: 'smtp.ethereal.email',
         port: 587,
         secure: false,
         auth: {
             user: process_1.env.MAIL_USER,
-            pass: process_1.env.MAIL_PASS,
-        },
+            pass: process_1.env.MAIL_PASS
+        }
     });
     const options = {
         from: process_1.env.TEST_FROM_EMAIL,
         to: mailBody.to,
         subject: mailBody.subject,
-        html: mailBody.html,
+        html: mailBody.html
     };
     trans.sendMail(options, (err, info) => {
         if (err)

@@ -37,11 +37,11 @@ exports.register = async (req, res, next) => {
         await User_1.User.create({
             username,
             email,
-            password,
+            password
         });
         res.status(200).json({
             success: true,
-            data: "User successfully registered",
+            data: 'User successfully registered'
         });
     }
     catch (error) {
@@ -50,10 +50,10 @@ exports.register = async (req, res, next) => {
                 success: false,
                 errors: [
                     {
-                        field: "email",
-                        message: "Email already exists",
-                    },
-                ],
+                        field: 'email',
+                        message: 'Email already exists'
+                    }
+                ]
             });
         }
         next(error);
@@ -62,23 +62,23 @@ exports.register = async (req, res, next) => {
 exports.login = async (req, res, next) => {
     const { email, password } = req.body;
     if (!email || !password) {
-        return next(new errorResponse_1.ErrorResponse("Required fields not provided", 400));
+        return next(new errorResponse_1.ErrorResponse('Required fields not provided', 400));
     }
     try {
-        const user = await User_1.User.findOne({ email }).select("+password");
+        const user = await User_1.User.findOne({ email }).select('+password');
         if (!user) {
-            return next(new errorResponse_1.ErrorResponse("User not found", 404));
+            return next(new errorResponse_1.ErrorResponse('User not found', 404));
         }
         const isMatch = await user.matchPasswords(password);
         if (!isMatch) {
-            return next(new errorResponse_1.ErrorResponse("Wrong password", 401));
+            return next(new errorResponse_1.ErrorResponse('Wrong password', 401));
         }
         res.status(200).json({
             success: true,
             data: {
                 token: helpers.getToken(user),
-                user: Object.assign({}, user.toJSON()),
-            },
+                user: Object.assign({}, user.toJSON())
+            }
         });
     }
     catch (error) {
@@ -90,7 +90,7 @@ exports.forgotPassword = async (req, res, next) => {
     try {
         const user = await User_1.User.findOne({ email });
         if (!user) {
-            return next(new errorResponse_1.ErrorResponse("This email is not registered", 401));
+            return next(new errorResponse_1.ErrorResponse('This email is not registered', 401));
         }
         const resetToken = await user.getResetToken();
         await user.save();
@@ -102,19 +102,19 @@ exports.forgotPassword = async (req, res, next) => {
         try {
             await helpers.sendMail({
                 to: email,
-                subject: "Reset your password",
-                html: message,
+                subject: 'Reset your password',
+                html: message
             });
             res.status(200).json({
                 success: true,
-                data: "Reset mail sent",
+                data: 'Reset mail sent'
             });
         }
         catch (error) {
             user.resetPasswordToken = undefined;
             user.resetPasswordExpire = undefined;
             await user.save();
-            return next(new errorResponse_1.ErrorResponse("Email sending error", 500));
+            return next(new errorResponse_1.ErrorResponse('Email sending error', 500));
         }
     }
     catch (error) {
@@ -123,16 +123,16 @@ exports.forgotPassword = async (req, res, next) => {
 };
 exports.resetPassword = async (req, res, next) => {
     const resetPasswordToken = crypto_1.default
-        .createHash("sha256")
+        .createHash('sha256')
         .update(req.params.resetToken)
-        .digest("hex");
+        .digest('hex');
     try {
         const user = await User_1.User.findOne({
             resetPasswordToken,
-            resetPasswordExpire: { $gt: Date.now() },
+            resetPasswordExpire: { $gt: Date.now() }
         });
         if (!user) {
-            return next(new errorResponse_1.ErrorResponse("Reset token invalid", 400));
+            return next(new errorResponse_1.ErrorResponse('Reset token invalid', 400));
         }
         user.password = req.body.password;
         user.resetPasswordToken = undefined;
@@ -140,13 +140,13 @@ exports.resetPassword = async (req, res, next) => {
         user.save();
         return res.status(200).json({
             success: true,
-            data: "Password reset success",
+            data: 'Password reset success'
         });
     }
     catch (error) {
         next(error);
     }
-    res.send("Reset password route");
+    res.send('Reset password route');
 };
 exports.removeUser = async (req, res, next) => {
     const { id } = req.body;
@@ -155,10 +155,10 @@ exports.removeUser = async (req, res, next) => {
             success: false,
             errors: [
                 {
-                    field: "id",
-                    message: "id is required",
-                },
-            ],
+                    field: 'id',
+                    message: 'id is required'
+                }
+            ]
         });
     }
     try {
@@ -168,17 +168,17 @@ exports.removeUser = async (req, res, next) => {
                 success: true,
                 errors: [
                     {
-                        field: "id",
-                        message: "Invalid user",
-                    },
-                ],
+                        field: 'id',
+                        message: 'Invalid user'
+                    }
+                ]
             });
         }
         await Customers_1.Customers.deleteMany({ adminId: user === null || user === void 0 ? void 0 : user._id });
         await (user === null || user === void 0 ? void 0 : user.remove());
         res.status(200).json({
             success: true,
-            data: "User successfully deleted",
+            data: 'User successfully deleted'
         });
     }
     catch (error) {
