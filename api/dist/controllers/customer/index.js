@@ -35,13 +35,13 @@ const addNewCustomer = async (req, res, next) => {
             name,
             phone,
             email,
-            refUser,
+            refUser
         });
         res.status(201).json({
             success: true,
             data: {
-                customer: Object.assign({}, customer.toJSON()),
-            },
+                customer: Object.assign({}, customer.toJSON())
+            }
         });
     }
     catch (error) {
@@ -50,10 +50,10 @@ const addNewCustomer = async (req, res, next) => {
                 success: false,
                 errors: [
                     {
-                        field: "name",
-                        message: "Customer already exists",
-                    },
-                ],
+                        field: 'name',
+                        message: 'Customer already exists'
+                    }
+                ]
             });
         }
         next(error);
@@ -68,10 +68,10 @@ const updateExistingCustomer = async (req, res, next) => {
             success: false,
             errors: [
                 {
-                    field: "id",
-                    message: "id is required",
-                },
-            ],
+                    field: 'id',
+                    message: 'id is required'
+                }
+            ]
         });
     }
     try {
@@ -84,14 +84,14 @@ const updateExistingCustomer = async (req, res, next) => {
             name,
             phone,
             email,
-            refUser,
+            refUser
         }));
         const updatedCustomer = await Customers_1.Customers.findOne({ adminId, _id: id });
         res.status(200).json({
             success: true,
             data: {
-                customer: Object.assign({}, updatedCustomer === null || updatedCustomer === void 0 ? void 0 : updatedCustomer.toJSON()),
-            },
+                customer: Object.assign({}, updatedCustomer === null || updatedCustomer === void 0 ? void 0 : updatedCustomer.toJSON())
+            }
         });
     }
     catch (error) {

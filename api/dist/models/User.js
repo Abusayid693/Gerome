@@ -35,28 +35,28 @@ const process_1 = require("process");
 const UserSchema = new mongoose_1.Schema({
     username: {
         type: String,
-        required: [true, "Username is required"],
+        required: [true, 'Username is required']
     },
     email: {
         type: String,
-        required: [true, "email is required"],
+        required: [true, 'email is required'],
         unique: true,
         match: [
             /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-            "Please fill a valid email address",
-        ],
+            'Please fill a valid email address'
+        ]
     },
     password: {
         type: String,
-        required: [true, "Please enter the password"],
+        required: [true, 'Please enter the password'],
         minlength: 6,
-        select: false,
+        select: false
     },
     resetPasswordToken: String,
-    resetPasswordExpire: Date,
+    resetPasswordExpire: Date
 });
-UserSchema.pre("save", async function (next) {
-    if (!this.isModified("password"))
+UserSchema.pre('save', async function (next) {
+    if (!this.isModified('password'))
         next();
     const salt = await bcryptjs_1.default.genSalt(10);
     this.password = await bcryptjs_1.default.hash(this.password, salt);
@@ -67,17 +67,17 @@ UserSchema.methods.matchPasswords = async function (password) {
 };
 UserSchema.methods.getSignedToken = function () {
     return jsonwebtoken_1.default.sign({ id: this._id }, process_1.env.JWT_SECRET, {
-        expiresIn: process_1.env.JWT_EXPIRE,
+        expiresIn: process_1.env.JWT_EXPIRE
     });
 };
 UserSchema.methods.getResetToken = async function () {
-    const resetToken = crypto_1.default.randomBytes(20).toString("hex");
+    const resetToken = crypto_1.default.randomBytes(20).toString('hex');
     this.resetPasswordToken = crypto_1.default
-        .createHash("sha256")
+        .createHash('sha256')
         .update(resetToken)
-        .digest("hex");
+        .digest('hex');
     this.resetPasswordExpire = Date.now() + 10 * (60 * 1000);
     return resetToken;
 };
-exports.User = mongoose_1.default.model("User", UserSchema);
+exports.User = mongoose_1.default.model('User', UserSchema);
 //# sourceMappingURL=User.js.map

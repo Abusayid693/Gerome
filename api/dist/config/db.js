@@ -7,11 +7,11 @@ exports.connectDB = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
 const options = {
     useNewUrlParser: true,
-    useUnifiedTopology: true,
+    useUnifiedTopology: true
 };
 const connectDB = async () => {
-    await mongoose_1.default.connect("mongodb://localhost:27017/gerome", options);
-    console.log("Database successfully connected");
+    await mongoose_1.default.connect('mongodb://localhost:27017/gerome', options);
+    console.log('Database successfully connected');
 };
 exports.connectDB = connectDB;
 //# sourceMappingURL=db.js.map
