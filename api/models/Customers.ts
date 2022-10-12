@@ -1,4 +1,4 @@
-import mongoose, {Model, Schema} from 'mongoose';
+import mongoose, {Schema} from 'mongoose';
 
 interface ICustomer {
   _id?: string;
@@ -58,7 +58,7 @@ const CustomersSchema: Schema = new Schema<ICustomer>({
 CustomersSchema.index({userId: 1, name: 1}, {unique: true});
 
 CustomersSchema.methods.ifReferencedUserPresent = async function () {
-  return (await this?.refUser) !== null;
+  return this?.refUser !== null;
 };
 
 export const Customers = mongoose.model('Customers', CustomersSchema);

@@ -27,10 +27,48 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const crypto_1 = __importDefault(require("crypto"));
+const process_1 = require("process");
 const Customers_1 = require("../../models/Customers");
 const User_1 = require("../../models/User");
 const errorResponse_1 = require("../../utils/errorResponse");
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const helpers = __importStar(require("./helpers"));
+exports.getUserDetails = async (req, res, next) => {
+    const user = req.user;
+    res.status(200).json({
+        success: true,
+        data: {
+            user: Object.assign({}, user)
+        }
+    });
+};
+exports.token = async (req, res, next) => {
+    let token;
+    if (typeof req.headers.refresh === 'string' &&
+        req.headers.refresh.startsWith('Bearer')) {
+        token = req.headers.refresh.split(' ')[1];
+    }
+    if (!token) {
+        return next(new errorResponse_1.ErrorResponse('Unauthorized request', 401));
+    }
+    try {
+        const decoded = jsonwebtoken_1.default.verify(token, process_1.env.REFRESH_TOKEN_SECRET);
+        const user = await User_1.User.findById(decoded === null || decoded === void 0 ? void 0 : decoded.id);
+        if (!user) {
+            return next(new errorResponse_1.ErrorResponse('User not found', 404));
+        }
+        res.status(200).json({
+            success: true,
+            data: {
+                token: user.getSignedToken(),
+                tokenExpires: process_1.env.JWT_EXPIRE
+            }
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+};
 exports.register = async (req, res, next) => {
     const { username, email, password } = req.body;
     try {
@@ -76,7 +114,9 @@ exports.login = async (req, res, next) => {
         res.status(200).json({
             success: true,
             data: {
-                token: helpers.getToken(user),
+                token: user.getSignedToken(),
+                tokenExpires: process_1.env.JWT_EXPIRE,
+                refreshToken: user.getSignedRefreshToken(),
                 user: Object.assign({}, user.toJSON())
             }
         });

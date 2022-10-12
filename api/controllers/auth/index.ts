@@ -1,9 +1,58 @@
 import crypto from 'crypto';
 import {NextFunction, Request, Response} from 'express';
+import {env} from 'process';
 import {Customers} from '../../models/Customers';
 import {User} from '../../models/User';
 import {ErrorResponse} from '../../utils/errorResponse';
+import jwt from 'jsonwebtoken';
 import * as helpers from './helpers';
+
+exports.getUserDetails = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const user = req.user;
+
+  res.status(200).json({
+    success: true,
+    data: {
+      user: {...user}
+    }
+  });
+};
+
+exports.token = async (req: Request, res: Response, next: NextFunction) => {
+  let token;
+  if (
+    typeof req.headers.refresh === 'string' &&
+    req.headers.refresh.startsWith('Bearer')
+  ) {
+    // eg:  Bearer evifheiuhgurih....
+    token = req.headers.refresh.split(' ')[1];
+  }
+  if (!token) {
+    return next(new ErrorResponse('Unauthorized request', 401));
+  }
+
+  try {
+    const decoded = jwt.verify(token, env.REFRESH_TOKEN_SECRET) as {id: string};
+    const user = await User.findById(decoded?.id);
+
+    if (!user) {
+      return next(new ErrorResponse('User not found', 404));
+    }
+    res.status(200).json({
+      success: true,
+      data: {
+        token: user.getSignedToken(),
+        tokenExpires: env.JWT_EXPIRE
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 exports.register = async (req: Request, res: Response, next: NextFunction) => {
   const {username, email, password} = req.body;
@@ -55,7 +104,9 @@ exports.login = async (req: Request, res: Response, next: NextFunction) => {
     res.status(200).json({
       success: true,
       data: {
-        token: helpers.getToken(user),
+        token: user.getSignedToken(),
+        tokenExpires: env.JWT_EXPIRE,
+        refreshToken: user.getSignedRefreshToken(),
         user: {...user.toJSON()}
       }
     });

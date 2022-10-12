@@ -54,6 +54,12 @@ UserSchema.methods.getSignedToken = function () {
   });
 };
 
+UserSchema.methods.getSignedRefreshToken = function () {
+  return jwt.sign({id: this._id}, env.REFRESH_TOKEN_SECRET, {
+    expiresIn: '90d'
+  });
+};
+
 // Need the manually save the changes
 UserSchema.methods.getResetToken = async function () {
   const resetToken = crypto.randomBytes(20).toString('hex');

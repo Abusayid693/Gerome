@@ -4,8 +4,12 @@ const {
   login,
   forgotPassword,
   resetPassword,
-  removeUser
+  removeUser,
+  getUserDetails,
+  token
 } = require('../controllers/auth');
+
+import {protect} from '../middlewares/auth';
 
 const authRouter = express.Router();
 
@@ -18,5 +22,9 @@ authRouter.route('/forgotPassword').post(forgotPassword);
 authRouter.route('/resetpassword/:resetToken').post(resetPassword);
 
 authRouter.route('/delete').delete(removeUser);
+
+authRouter.route('/me').get(protect, getUserDetails);
+
+authRouter.route('/token').get(token);
 
 export default authRouter;

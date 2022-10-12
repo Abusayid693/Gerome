@@ -62,8 +62,7 @@ export const updateExistingCustomer = async (
 
   try {
     const customer = await Customers.findOne({adminId, _id: id});
-
-    const isReferencedUserPresent = customer?.refUser !== null;
+    const isReferencedUserPresent = customer?.ifReferencedUserPresent();
     const refUser = isReferencedUserPresent
       ? await helpers.getReferencedUserByEmail(email)
       : null;
