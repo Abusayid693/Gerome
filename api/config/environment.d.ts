@@ -3,6 +3,7 @@ declare global {
     interface ProcessEnv {
       JWT_SECRET: string;
       JWT_EXPIRE: string;
+      REFRESH_TOKEN_SECRET: string;
       NODE_ENV: 'development' | 'production';
       PORT?: string;
       PWD: string;
