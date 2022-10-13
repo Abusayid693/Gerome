@@ -2,22 +2,25 @@ import dotenv from 'dotenv';
 dotenv.config({path: './config.env'});
 
 import express from 'express';
+import fileupload from 'express-fileupload';
 import {connectDB} from './config/db';
 import {errorHandler} from './middlewares/error';
-
 // Routers
 import authRouter from './routes/auth';
 import customerRouter from './routes/customer';
 import privateRouter from './routes/private';
+import uploadRouter from './routes/upload';
 
 const app = express();
 connectDB();
 
 app.use(express.json());
+app.use(fileupload());
 
 app.use('/api/auth', authRouter);
 app.use('/api/customer', customerRouter);
 app.use('/api/private/test', privateRouter);
+app.use('/api/upload', uploadRouter);
 
 app.use(errorHandler);
 
