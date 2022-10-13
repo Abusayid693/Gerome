@@ -23,9 +23,26 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateExistingCustomer = exports.addNewCustomer = void 0;
+exports.deleteExistingCustomer = exports.updateExistingCustomer = exports.addNewCustomer = exports.getCustomers = void 0;
 const Customers_1 = require("../../models/Customers");
 const helpers = __importStar(require("./helpers"));
+const getCustomers = async (req, res, next) => {
+    const { limit = 50, offset = 0 } = req.body;
+    const adminId = req.user._id;
+    try {
+        const customers = await Customers_1.Customers.find({ adminId }).skip(offset).limit(limit);
+        const total = await Customers_1.Customers.find({ adminId }).count();
+        res.status(201).json({
+            success: true,
+            data: {
+                customers: [...customers],
+                total
+            }
+        });
+    }
+    catch (error) { }
+};
+exports.getCustomers = getCustomers;
 const addNewCustomer = async (req, res, next) => {
     const { name, phone, email, refUser } = req.body;
     const adminId = req.user._id;
@@ -62,7 +79,6 @@ const addNewCustomer = async (req, res, next) => {
 exports.addNewCustomer = addNewCustomer;
 const updateExistingCustomer = async (req, res, next) => {
     const { id, name, phone, email } = req.body;
-    const adminId = req.user._id;
     if (!id) {
         res.status(409).json({
             success: false,
@@ -75,8 +91,8 @@ const updateExistingCustomer = async (req, res, next) => {
         });
     }
     try {
-        const customer = await Customers_1.Customers.findOne({ adminId, _id: id });
-        const isReferencedUserPresent = (customer === null || customer === void 0 ? void 0 : customer.refUser) !== null;
+        const customer = await Customers_1.Customers.findOne({ _id: id });
+        const isReferencedUserPresent = customer === null || customer === void 0 ? void 0 : customer.ifReferencedUserPresent();
         const refUser = isReferencedUserPresent
             ? await helpers.getReferencedUserByEmail(email)
             : null;
@@ -86,7 +102,7 @@ const updateExistingCustomer = async (req, res, next) => {
             email,
             refUser
         }));
-        const updatedCustomer = await Customers_1.Customers.findOne({ adminId, _id: id });
+        const updatedCustomer = await Customers_1.Customers.findOne({ _id: id });
         res.status(200).json({
             success: true,
             data: {
@@ -99,4 +115,29 @@ const updateExistingCustomer = async (req, res, next) => {
     }
 };
 exports.updateExistingCustomer = updateExistingCustomer;
+const deleteExistingCustomer = async (req, res, next) => {
+    const { id } = req.body;
+    if (!id) {
+        res.status(409).json({
+            success: false,
+            errors: [
+                {
+                    field: 'id',
+                    message: 'id is required'
+                }
+            ]
+        });
+    }
+    try {
+        await Customers_1.Customers.findByIdAndDelete(id);
+        res.status(200).json({
+            success: true,
+            data: 'Customer successfully deleted'
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+};
+exports.deleteExistingCustomer = deleteExistingCustomer;
 //# sourceMappingURL=index.js.map
