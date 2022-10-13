@@ -1,10 +1,10 @@
 import crypto from 'crypto';
 import {NextFunction, Request, Response} from 'express';
+import jwt from 'jsonwebtoken';
 import {env} from 'process';
 import {Customers} from '../../models/Customers';
 import {User} from '../../models/User';
 import {ErrorResponse} from '../../utils/errorResponse';
-import jwt from 'jsonwebtoken';
 import * as helpers from './helpers';
 
 exports.getUserDetails = async (
@@ -64,7 +64,7 @@ exports.register = async (req: Request, res: Response, next: NextFunction) => {
       password
     });
 
-    res.status(200).json({
+    res.status(201).json({
       success: true,
       data: 'User successfully registered'
     });

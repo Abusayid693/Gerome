@@ -63,7 +63,7 @@ const CustomersSchema = new mongoose_1.Schema({
 });
 CustomersSchema.index({ userId: 1, name: 1 }, { unique: true });
 CustomersSchema.methods.ifReferencedUserPresent = async function () {
-    return (await (this === null || this === void 0 ? void 0 : this.refUser)) !== null;
+    return (this === null || this === void 0 ? void 0 : this.refUser) !== null;
 };
 exports.Customers = mongoose_1.default.model('Customers', CustomersSchema);
 //# sourceMappingURL=Customers.js.map

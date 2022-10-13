@@ -70,6 +70,11 @@ UserSchema.methods.getSignedToken = function () {
         expiresIn: process_1.env.JWT_EXPIRE
     });
 };
+UserSchema.methods.getSignedRefreshToken = function () {
+    return jsonwebtoken_1.default.sign({ id: this._id }, process_1.env.REFRESH_TOKEN_SECRET, {
+        expiresIn: '90d'
+    });
+};
 UserSchema.methods.getResetToken = async function () {
     const resetToken = crypto_1.default.randomBytes(20).toString('hex');
     this.resetPasswordToken = crypto_1.default
