@@ -6,7 +6,8 @@ const {
   resetPassword,
   removeUser,
   getUserDetails,
-  token
+  token,
+  getUserByEmail
 } = require('../controllers/auth');
 
 import {protect} from '../middlewares/auth';
@@ -26,5 +27,7 @@ authRouter.route('/delete').delete(removeUser);
 authRouter.route('/me').get(protect, getUserDetails);
 
 authRouter.route('/token').get(token);
+
+authRouter.route('/getUserByEmail/:email').post(protect, getUserByEmail);
 
 export default authRouter;

@@ -68,7 +68,7 @@ export const updateExistingCustomer = async (
   res: Response,
   next: NextFunction
 ) => {
-  const {id, name, phone, email} = req.body;
+  const {id, name, email, refUser} = req.body;
 
   if (!id) {
     res.status(409).json({
@@ -84,14 +84,9 @@ export const updateExistingCustomer = async (
 
   try {
     const customer = await Customers.findOne({_id: id});
-    const isReferencedUserPresent = customer?.ifReferencedUserPresent();
-    const refUser = isReferencedUserPresent
-      ? await helpers.getReferencedUserByEmail(email)
-      : null;
 
     await customer?.update({
       name,
-      phone,
       email,
       refUser
     });

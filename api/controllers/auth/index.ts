@@ -7,6 +7,10 @@ import {User} from '../../models/User';
 import {ErrorResponse} from '../../utils/errorResponse';
 import * as helpers from './helpers';
 
+/**
+ *
+ */
+
 exports.getUserDetails = async (
   req: Request,
   res: Response,
@@ -17,10 +21,50 @@ exports.getUserDetails = async (
   res.status(200).json({
     success: true,
     data: {
-      user: {...user}
+      user: {...user.toJSON()}
     }
   });
 };
+
+/**
+ *
+ */
+
+exports.getUserByEmail = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const email = req.params.email;
+
+  if (!email) {
+    res.status(409).json({
+      success: false,
+      errors: [
+        {
+          field: 'email',
+          message: 'Invalid email'
+        }
+      ]
+    });
+  }
+
+  try {
+    const user = await User.findOne({email});
+    res.status(200).json({
+      success: true,
+      data: {
+        users: user
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ *
+ */
 
 exports.token = async (req: Request, res: Response, next: NextFunction) => {
   let token;
@@ -54,6 +98,10 @@ exports.token = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+/**
+ *
+ */
+
 exports.register = async (req: Request, res: Response, next: NextFunction) => {
   const {username, email, password} = req.body;
 
@@ -83,6 +131,10 @@ exports.register = async (req: Request, res: Response, next: NextFunction) => {
     next(error);
   }
 };
+
+/**
+ *
+ */
 
 exports.login = async (req: Request, res: Response, next: NextFunction) => {
   const {email, password} = req.body;
@@ -114,6 +166,10 @@ exports.login = async (req: Request, res: Response, next: NextFunction) => {
     next(error);
   }
 };
+
+/**
+ *
+ */
 
 exports.forgotPassword = async (
   req: Request,
@@ -161,6 +217,10 @@ exports.forgotPassword = async (
     next(error);
   }
 };
+
+/**
+ *
+ */
 
 exports.resetPassword = async (
   req: Request,
