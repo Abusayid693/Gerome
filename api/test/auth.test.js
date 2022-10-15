@@ -29,9 +29,7 @@ describe('Test Auth APIs', () => {
         .send(registerData)
         .end((err, response) => {
           response.should.have.status(400);
-          response.body.should.have
-            .property('error')
-            .eq('Duplicate Field value error');
+          response.body.should.have.property('error').eq('Duplicate Field value error');
           done();
         });
     });

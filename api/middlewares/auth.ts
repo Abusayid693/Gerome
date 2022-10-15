@@ -4,16 +4,9 @@ import {env} from 'process';
 import {User} from '../models/User';
 import {ErrorResponse} from '../utils/errorResponse';
 
-export const protect = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const protect = async (req: Request, res: Response, next: NextFunction) => {
   let token;
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith('Bearer')
-  ) {
+  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
     // eg:  Bearer evifheiuhgurih....
     token = req.headers.authorization.split(' ')[1];
   }

@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/node';
 import {NextFunction, Request, Response} from 'express';
 import {Customers} from '../../models/Customers';
 import {d1} from '../../models/d1';
@@ -5,11 +6,7 @@ import {d1} from '../../models/d1';
 /**
  *
  */
-export const create = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const create = async (req: Request, res: Response, next: NextFunction) => {
   const adminId = req.user._id;
   const {customerId, reason, details, amount} = req.body;
 
@@ -31,6 +28,7 @@ export const create = async (
       }
     });
   } catch (error) {
+    Sentry.captureException(`Error occoured at ${__filename}.create: ${error}`);
     return next(error);
   }
 };

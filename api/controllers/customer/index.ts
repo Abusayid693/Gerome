@@ -1,12 +1,10 @@
+import * as Sentry from '@sentry/node';
 import {NextFunction, Request, Response} from 'express';
 import {Customers} from '../../models/Customers';
+import * as errorResponse from '../../utils/errorResponse';
 import * as helpers from './helpers';
 
-export const getCustomers = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const getCustomers = async (req: Request, res: Response, next: NextFunction) => {
   const {limit = 50, offset = 0} = req.body;
   const adminId = req.user._id;
 
@@ -21,14 +19,13 @@ export const getCustomers = async (
         total
       }
     });
-  } catch (error) {}
+  } catch (error) {
+    Sentry.captureException(`Error occoured at ${__filename}.getCustomers: ${error}`);
+    next(error);
+  }
 };
 
-export const addNewCustomer = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const addNewCustomer = async (req: Request, res: Response, next: NextFunction) => {
   const {name, phone, email, refUser} = req.body;
   const adminId = req.user._id;
   try {
@@ -59,32 +56,23 @@ export const addNewCustomer = async (
       });
     }
 
-    next(error);
+    Sentry.captureException(`Error occoured at ${__filename}.addNewCustomer: ${error}`);
+    return next(error);
   }
 };
 
-export const updateExistingCustomer = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const updateExistingCustomer = async (req: Request, res: Response, next: NextFunction) => {
   const {id, name, email, refUser} = req.body;
 
   if (!id) {
-    res.status(409).json({
-      success: false,
-      errors: [
-        {
-          field: 'id',
-          message: 'id is required'
-        }
-      ]
-    });
+    return next(new errorResponse.ErrorResponse('Required fields not provided', 400));
   }
 
   try {
     const customer = await Customers.findOne({_id: id});
-
+    if (!customer) {
+      throw new errorResponse.NotFoundResponse(`customer with id:${id} not found`);
+    }
     await customer?.update({
       name,
       email,
@@ -99,36 +87,32 @@ export const updateExistingCustomer = async (
       }
     });
   } catch (error) {
+    Sentry.captureException(`Error occoured at ${__filename}.updateExistingCustomer: ${error}`);
     next(error);
   }
 };
 
-export const deleteExistingCustomer = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const deleteExistingCustomer = async (req: Request, res: Response, next: NextFunction) => {
   const {id} = req.body;
 
   if (!id) {
-    res.status(409).json({
-      success: false,
-      errors: [
-        {
-          field: 'id',
-          message: 'id is required'
-        }
-      ]
-    });
+    return next(new errorResponse.ErrorResponse('Required fields not provided', 400));
   }
 
   try {
-    await Customers.findByIdAndDelete(id);
+    const customer = await Customers.findById(id);
+    if (!customer) {
+      throw new errorResponse.NotFoundResponse(`customer with id:${id} not found`);
+    }
+
+    await customer.delete();
+
     res.status(200).json({
       success: true,
       data: 'Customer successfully deleted'
     });
   } catch (error) {
+    Sentry.captureException(`Error occoured at ${__filename}.deleteExistingCustomer: ${error}`);
     next(error);
   }
 };

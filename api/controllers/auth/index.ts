@@ -1,21 +1,18 @@
+import * as Sentry from '@sentry/node';
 import crypto from 'crypto';
 import {NextFunction, Request, Response} from 'express';
 import jwt from 'jsonwebtoken';
 import {env} from 'process';
 import {Customers} from '../../models/Customers';
 import {User} from '../../models/User';
-import {ErrorResponse} from '../../utils/errorResponse';
+import * as errorResponse from '../../utils/errorResponse';
 import * as helpers from './helpers';
 
 /**
  *
  */
 
-exports.getUserDetails = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+exports.getUserDetails = async (req: Request, res: Response, next: NextFunction) => {
   const user = req.user;
 
   res.status(200).json({
@@ -30,24 +27,12 @@ exports.getUserDetails = async (
  *
  */
 
-exports.getUserByEmail = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+exports.getUserByEmail = async (req: Request, res: Response, next: NextFunction) => {
   const email = req.params.email;
   const admin = req.user;
 
   if (!email) {
-    res.status(409).json({
-      success: false,
-      errors: [
-        {
-          field: 'email',
-          message: 'Invalid email'
-        }
-      ]
-    });
+    return next(new errorResponse.ErrorResponse('Required fields not provided', 400));
   }
 
   try {
@@ -62,7 +47,8 @@ exports.getUserByEmail = async (
       }
     });
   } catch (error) {
-    next(error);
+    Sentry.captureException(`Error occoured at ${__filename}.getUserByEmail: ${error}`);
+    return next(error);
   }
 };
 
@@ -70,24 +56,12 @@ exports.getUserByEmail = async (
  *
  */
 
-exports.getUserByUsername = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+exports.getUserByUsername = async (req: Request, res: Response, next: NextFunction) => {
   const username = req.params.username;
   const admin = req.user;
 
   if (!username) {
-    res.status(409).json({
-      success: false,
-      errors: [
-        {
-          field: 'username',
-          message: 'username is required'
-        }
-      ]
-    });
+    return next(new errorResponse.ErrorResponse('Required fields not provided', 400));
   }
 
   try {
@@ -102,7 +76,8 @@ exports.getUserByUsername = async (
       }
     });
   } catch (error) {
-    next(error);
+    Sentry.captureException(`Error occoured at ${__filename}.getUserByUsername: ${error}`);
+    return next(error);
   }
 };
 
@@ -112,15 +87,12 @@ exports.getUserByUsername = async (
 
 exports.token = async (req: Request, res: Response, next: NextFunction) => {
   let token;
-  if (
-    typeof req.headers.refresh === 'string' &&
-    req.headers.refresh.startsWith('Bearer')
-  ) {
+  if (typeof req.headers.refresh === 'string' && req.headers.refresh.startsWith('Bearer')) {
     // eg:  Bearer evifheiuhgurih....
     token = req.headers.refresh.split(' ')[1];
   }
   if (!token) {
-    return next(new ErrorResponse('Unauthorized request', 401));
+    return next(new errorResponse.ErrorResponse('Unauthorized request', 401));
   }
 
   try {
@@ -128,7 +100,7 @@ exports.token = async (req: Request, res: Response, next: NextFunction) => {
     const user = await User.findById(decoded?.id);
 
     if (!user) {
-      return next(new ErrorResponse('User not found', 404));
+      throw new errorResponse.NotFoundResponse('Invalid refresh token or token expired');
     }
     res.status(200).json({
       success: true,
@@ -138,6 +110,7 @@ exports.token = async (req: Request, res: Response, next: NextFunction) => {
       }
     });
   } catch (error) {
+    Sentry.captureException(`Error occoured at ${__filename}.token: ${error}`);
     next(error);
   }
 };
@@ -172,6 +145,7 @@ exports.register = async (req: Request, res: Response, next: NextFunction) => {
         ]
       });
     }
+    Sentry.captureException(`Error occoured at ${__filename}.register: ${error}`);
     next(error);
   }
 };
@@ -183,18 +157,34 @@ exports.register = async (req: Request, res: Response, next: NextFunction) => {
 exports.login = async (req: Request, res: Response, next: NextFunction) => {
   const {email, password} = req.body;
   if (!email || !password) {
-    return next(new ErrorResponse('Required fields not provided', 400));
+    return next(new errorResponse.ErrorResponse('Required fields not provided', 400));
   }
   try {
     const user = await User.findOne({email}).select('+password');
+
     if (!user) {
-      return next(new ErrorResponse('User not found', 404));
+      return res.status(401).json({
+        success: false,
+        errors: [
+          {
+            field: 'email',
+            message: 'Email not registered'
+          }
+        ]
+      });
     }
 
     const isMatch = await user.matchPasswords(password);
-
     if (!isMatch) {
-      return next(new ErrorResponse('Wrong password', 401));
+      return res.status(409).json({
+        success: false,
+        errors: [
+          {
+            field: 'password',
+            message: 'wrong password'
+          }
+        ]
+      });
     }
 
     res.status(200).json({
@@ -207,6 +197,7 @@ exports.login = async (req: Request, res: Response, next: NextFunction) => {
       }
     });
   } catch (error) {
+    Sentry.captureException(`Error occoured at ${__filename}.login: ${error}`);
     next(error);
   }
 };
@@ -215,23 +206,26 @@ exports.login = async (req: Request, res: Response, next: NextFunction) => {
  *
  */
 
-exports.forgotPassword = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+exports.forgotPassword = async (req: Request, res: Response, next: NextFunction) => {
   const {email} = req.body;
-
+  if (!email) return next(new errorResponse.ErrorResponse('Required fields not provided', 400));
   try {
     const user = await User.findOne({email});
     if (!user) {
-      return next(new ErrorResponse('This email is not registered', 401));
+      res.status(400).json({
+        success: false,
+        errors: [
+          {
+            field: 'email',
+            message: 'email is not registered'
+          }
+        ]
+      });
+      return;
     }
 
     const resetToken = await user.getResetToken();
-
     await user.save();
-
     const resetUrl = `http://localhost:300/reset/${resetToken}`;
 
     const message = `
@@ -254,11 +248,11 @@ exports.forgotPassword = async (
       user.resetPasswordToken = undefined;
       user.resetPasswordExpire = undefined;
       await user.save();
-
-      return next(new ErrorResponse('Email sending error', 500));
+      throw new errorResponse.ErrorResponse('Email sending error', 500);
     }
   } catch (error) {
-    next(error);
+    Sentry.captureException(`Error occoured at ${__filename}.forgotPassword: ${error}`);
+    return next(error);
   }
 };
 
@@ -266,16 +260,9 @@ exports.forgotPassword = async (
  *
  */
 
-exports.resetPassword = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const resetPasswordToken = crypto
-    .createHash('sha256')
-    .update(req.params.resetToken)
-    .digest('hex');
-
+exports.resetPassword = async (req: Request, res: Response, next: NextFunction) => {
+  const resetPasswordToken = crypto.createHash('sha256').update(req.params.resetToken).digest('hex');
+  if (!resetPasswordToken) return next(new errorResponse.ErrorResponse('Required fields not provided', 400));
   try {
     const user = await User.findOne({
       resetPasswordToken,
@@ -283,7 +270,16 @@ exports.resetPassword = async (
     });
 
     if (!user) {
-      return next(new ErrorResponse('Reset token invalid', 400));
+      res.status(400).json({
+        success: false,
+        errors: [
+          {
+            field: 'email',
+            message: 'email is not registered'
+          }
+        ]
+      });
+      return;
     }
     user.password = req.body.password;
     user.resetPasswordToken = undefined;
@@ -294,44 +290,19 @@ exports.resetPassword = async (
       data: 'Password reset success'
     });
   } catch (error) {
+    Sentry.captureException(`Error occoured at ${__filename}.resetPassword: ${error}`);
     next(error);
   }
-
-  res.send('Reset password route');
 };
 
-exports.removeUser = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const {id} = req.body;
+/**
+ *
+ */
 
-  if (!id) {
-    res.status(403).json({
-      success: false,
-      errors: [
-        {
-          field: 'id',
-          message: 'id is required'
-        }
-      ]
-    });
-  }
+exports.removeUser = async (req: Request, res: Response, next: NextFunction) => {
+  const adminId = req.user._id;
   try {
-    const user = await User.findById(id);
-
-    if (!user?._id) {
-      res.status(400).json({
-        success: true,
-        errors: [
-          {
-            field: 'id',
-            message: 'Invalid user'
-          }
-        ]
-      });
-    }
+    const user = await User.findById(adminId);
 
     await Customers.deleteMany({adminId: user?._id});
     await user?.remove();
@@ -341,6 +312,7 @@ exports.removeUser = async (
       data: 'User successfully deleted'
     });
   } catch (error) {
+    Sentry.captureException(`Error occoured at ${__filename}.removeUser: ${error}`);
     next(error);
   }
 };
