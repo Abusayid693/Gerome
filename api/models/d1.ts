@@ -38,7 +38,8 @@ const d1Schema: Schema = new Schema<SchemaType>(
       required: [true, 'amount is required']
     },
     details: {
-      type: [String]
+      type: [String],
+      default: []
     }
   },
   {
