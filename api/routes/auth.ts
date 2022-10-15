@@ -7,7 +7,8 @@ const {
   removeUser,
   getUserDetails,
   token,
-  getUserByEmail
+  getUserByEmail,
+  getUserByUsername
 } = require('../controllers/auth');
 
 import {protect} from '../middlewares/auth';
@@ -29,5 +30,9 @@ authRouter.route('/me').get(protect, getUserDetails);
 authRouter.route('/token').get(token);
 
 authRouter.route('/getUserByEmail/:email').post(protect, getUserByEmail);
+
+authRouter
+  .route('/getUserByUsername/:username')
+  .post(protect, getUserByUsername);
 
 export default authRouter;

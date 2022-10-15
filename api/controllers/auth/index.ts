@@ -70,6 +70,46 @@ exports.getUserByEmail = async (
  *
  */
 
+exports.getUserByUsername = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const username = req.params.username;
+  const admin = req.user;
+
+  if (!username) {
+    res.status(409).json({
+      success: false,
+      errors: [
+        {
+          field: 'username',
+          message: 'username is required'
+        }
+      ]
+    });
+  }
+
+  try {
+    const user = await User.find({
+      $and: [{username: username}, {email: {$ne: admin.email}}]
+    });
+
+    res.status(200).json({
+      success: true,
+      data: {
+        users: user
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ *
+ */
+
 exports.token = async (req: Request, res: Response, next: NextFunction) => {
   let token;
   if (
