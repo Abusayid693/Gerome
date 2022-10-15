@@ -36,6 +36,7 @@ exports.getUserByEmail = async (
   next: NextFunction
 ) => {
   const email = req.params.email;
+  const admin = req.user;
 
   if (!email) {
     res.status(409).json({
@@ -50,7 +51,10 @@ exports.getUserByEmail = async (
   }
 
   try {
-    const user = await User.findOne({email});
+    const user = await User.find({
+      $and: [{email: email}, {email: {$ne: admin.email}}]
+    });
+
     res.status(200).json({
       success: true,
       data: {
