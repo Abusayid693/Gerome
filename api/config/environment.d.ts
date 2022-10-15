@@ -11,6 +11,7 @@ declare global {
       PORT?: string;
       PWD: string;
       TEST_FROM_EMAIL: string;
+      SENTRY_DSN: string;
       MAIL_USER: string;
       MAIL_PASS: string;
     }

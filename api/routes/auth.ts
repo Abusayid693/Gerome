@@ -23,16 +23,14 @@ authRouter.route('/forgotPassword').post(forgotPassword);
 
 authRouter.route('/resetpassword/:resetToken').post(resetPassword);
 
-authRouter.route('/delete').delete(removeUser);
+authRouter.route('/token').get(token);
+
+authRouter.route('/delete').delete(protect, removeUser);
 
 authRouter.route('/me').get(protect, getUserDetails);
 
-authRouter.route('/token').get(token);
-
 authRouter.route('/getUserByEmail/:email').post(protect, getUserByEmail);
 
-authRouter
-  .route('/getUserByUsername/:username')
-  .post(protect, getUserByUsername);
+authRouter.route('/getUserByUsername/:username').post(protect, getUserByUsername);
 
 export default authRouter;

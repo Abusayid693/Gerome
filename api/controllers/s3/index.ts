@@ -15,11 +15,7 @@ export interface IFile {
   md5: String;
 }
 
-export const S3UploadFile = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const S3UploadFile = (req: Request, res: Response, next: NextFunction) => {
   if (req.files) {
     const image = req.files.file as IFile;
 

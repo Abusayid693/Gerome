@@ -1,10 +1,5 @@
 import express from 'express';
-import {
-  addNewCustomer,
-  deleteExistingCustomer,
-  getCustomers,
-  updateExistingCustomer
-} from '../controllers/customer';
+import {addNewCustomer, deleteExistingCustomer, getCustomers, updateExistingCustomer} from '../controllers/customer';
 import {protect} from '../middlewares/auth';
 const customerRouter = express.Router();
 
