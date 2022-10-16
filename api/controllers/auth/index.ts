@@ -4,6 +4,7 @@ import {NextFunction, Request, Response} from 'express';
 import jwt from 'jsonwebtoken';
 import {env} from 'process';
 import {Customers} from '../../models/Customers';
+import {d1} from '../../models/d1';
 import {User} from '../../models/User';
 import * as errorResponse from '../../utils/errorResponse';
 import * as helpers from './helpers';
@@ -302,10 +303,9 @@ exports.resetPassword = async (req: Request, res: Response, next: NextFunction) 
 exports.removeUser = async (req: Request, res: Response, next: NextFunction) => {
   const adminId = req.user._id;
   try {
-    const user = await User.findById(adminId);
-
-    await Customers.deleteMany({adminId: user?._id});
-    await user?.remove();
+    await d1.deleteMany({adminId});
+    await Customers.deleteMany({adminId});
+    await User.findByIdAndRemove(adminId);
 
     res.status(200).json({
       success: true,
