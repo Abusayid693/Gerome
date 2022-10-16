@@ -1,8 +1,14 @@
 import * as Sentry from '@sentry/node';
 import {NextFunction, Request, Response} from 'express';
 import {Customers} from '../../models/Customers';
+import {d1} from '../../models/d1';
 import * as errorResponse from '../../utils/errorResponse';
 import * as helpers from './helpers';
+
+/**
+ * @param body - limit, offset
+ * @returns  - sends all customers for a admin
+ */
 
 export const getCustomers = async (req: Request, res: Response, next: NextFunction) => {
   const {limit = 50, offset = 0} = req.body;
@@ -24,6 +30,11 @@ export const getCustomers = async (req: Request, res: Response, next: NextFuncti
     next(error);
   }
 };
+
+/**
+ * @param req - name, phone, email, refUser
+ * @returns - add new customer in databse
+ */
 
 export const addNewCustomer = async (req: Request, res: Response, next: NextFunction) => {
   const {name, phone, email, refUser} = req.body;
@@ -94,6 +105,7 @@ export const updateExistingCustomer = async (req: Request, res: Response, next: 
 
 export const deleteExistingCustomer = async (req: Request, res: Response, next: NextFunction) => {
   const {id} = req.body;
+  const adminId = req.user._id;
 
   if (!id) {
     return next(new errorResponse.ErrorResponse('Required fields not provided', 400));
@@ -105,6 +117,7 @@ export const deleteExistingCustomer = async (req: Request, res: Response, next: 
       throw new errorResponse.NotFoundResponse(`customer with id:${id} not found`);
     }
 
+    await d1.deleteMany({adminId, customerId: id});
     await customer.delete();
 
     res.status(200).json({
