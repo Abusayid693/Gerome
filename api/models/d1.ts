@@ -15,7 +15,7 @@ interface SchemaType {
   amount: string;
 }
 
-const d1Schema: Schema = new Schema<SchemaType>(
+export const d1Schema: Schema = new Schema<SchemaType>(
   {
     adminId: {
       type: Schema.Types.ObjectId,
