@@ -5,6 +5,7 @@ import * as Sentry from '@sentry/node';
 import * as Tracing from '@sentry/tracing';
 import express from 'express';
 import fileupload from 'express-fileupload';
+import {createClient} from 'redis';
 import {connectDB} from './config/db';
 import {errorHandler} from './middlewares/error';
 // Routers
@@ -16,6 +17,7 @@ import privateRouter from './routes/private';
 import uploadRouter from './routes/upload';
 
 const app = express();
+const redisClient = createClient();
 
 Sentry.init({
   dsn: env.SENTRY_DSN,
@@ -32,6 +34,19 @@ app.use(Sentry.Handlers.requestHandler());
 app.use(Sentry.Handlers.tracingHandler());
 
 connectDB();
+
+(async () => {
+  redisClient.on('error', error => {
+    console.log('[Error]: Redis Client Error', error);
+    Sentry.captureException(`Error occoured at ${__filename}.redisClient: ${error}`);
+  });
+
+  redisClient.on('ready', () => {
+    console.log('[Running]: Redis Client successfully connected');
+  });
+
+  await redisClient.connect();
+})();
 
 app.use(express.json());
 app.use(fileupload());
@@ -62,6 +77,7 @@ const server = app.listen(port, () => {
 
 process.on('unhandledRejection', (error, promise) => {
   console.log(`Logged Error : ${error}`);
+  Sentry.captureException(`Error occoured at ${__filename}.unhandledRejection: ${error}`);
   server.close(() => process.exit(1));
 });
 
