@@ -97,7 +97,7 @@ exports.token = async (req: Request, res: Response, next: NextFunction) => {
   }
 
   try {
-    const decoded = jwt.verify(token, env.REFRESH_TOKEN_SECRET) as {id: string};
+    const decoded = jwt.verify(token, env.JWT_REFRESH_SECRET) as {id: string};
     const user = await User.findById(decoded?.id);
 
     if (!user) {

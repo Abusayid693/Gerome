@@ -60,7 +60,7 @@ UserSchema.methods.getSignedToken = function () {
 };
 
 UserSchema.methods.getSignedRefreshToken = function () {
-  return jwt.sign({id: this._id}, env.REFRESH_TOKEN_SECRET, {
+  return jwt.sign({id: this._id}, env.JWT_REFRESH_SECRET, {
     expiresIn: '90d'
   });
 };
