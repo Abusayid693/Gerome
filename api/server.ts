@@ -61,7 +61,8 @@ const server = app.listen(port, () => {
 });
 
 process.on('unhandledRejection', (error, promise) => {
-  console.log(`Logged Error : ${error}`);
+  console.log(`[Error]: unhandled rejection Error : ${error}`);
+  Sentry.captureException(`Error occoured at ${__filename}.unhandledRejection: ${error}`);
   server.close(() => process.exit(1));
 });
 
