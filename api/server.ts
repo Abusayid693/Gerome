@@ -12,6 +12,7 @@ import {env} from 'process';
 import authRouter from './routes/auth';
 import customerRouter from './routes/customer';
 import d1Router from './routes/d1';
+import d2Router from './routes/d2';
 import privateRouter from './routes/private';
 import uploadRouter from './routes/upload';
 
@@ -41,6 +42,7 @@ app.use('/api/customer', customerRouter);
 app.use('/api/private/test', privateRouter);
 app.use('/api/upload', uploadRouter);
 app.use('/api/d1', d1Router);
+app.use('/api/d2', d2Router);
 
 app.use(
   Sentry.Handlers.errorHandler({
