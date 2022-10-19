@@ -60,7 +60,7 @@ const CustomersSchema: Schema = new Schema<ICustomer>(
   }
 );
 
-CustomersSchema.index({userId: 1, name: 1}, {unique: true});
+CustomersSchema.index({adminId: 1, name: 1}, {unique: true});
 
 CustomersSchema.methods.ifReferencedUserPresent = async function () {
   return this?.refUser !== null;

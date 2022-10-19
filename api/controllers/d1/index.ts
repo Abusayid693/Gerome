@@ -11,7 +11,6 @@ export class d {
   constructor(public schema: typeof mongoose.Model, public typeToTake: string) {
     this._schema = schema;
     this._typeToTake = typeToTake;
-    console.log('_typeToTake :', this._typeToTake);
   }
 
   async create(req: Request, res: Response, next: NextFunction) {

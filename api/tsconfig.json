@@ -25,7 +25,7 @@
       "baseUrl": "."
     },
     "exclude": ["node_modules"],
-    "include": ["./**/*.ts", "./*.ts","test/auth.test.js"],
+    "include": ["./**/*.ts", "./*.ts","test/auth.test.js", "populateDb.js"],
     "rules": {
       "no-unused-vars": "off",
       "@typescript-eslint/no-unused-vars": "error"
