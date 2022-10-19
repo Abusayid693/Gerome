@@ -1,16 +1,16 @@
 import express from 'express';
-import d1Controller from '../controllers/d1/d1';
+import d2Controller from '../controllers/d1/d2';
 
 import {protect} from '../middlewares/auth';
 
 const router = express.Router();
 
 router.route('/create').post(protect, function (...args) {
-  return d1Controller.create(...args);
+  return d2Controller.create(...args);
 });
 
 router.route('/get/:customerId').post(protect, function (...args) {
-  return d1Controller.get(...args);
+  return d2Controller.get(...args);
 });
 
 export default router;
