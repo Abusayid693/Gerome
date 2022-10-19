@@ -73,16 +73,16 @@ export const addNewCustomer = async (req: Request, res: Response, next: NextFunc
 };
 
 export const updateExistingCustomer = async (req: Request, res: Response, next: NextFunction) => {
-  const {id, name, email, refUser} = req.body;
+  const {customerId, name, email, refUser} = req.body;
 
-  if (!id) {
+  if (!customerId) {
     return next(new errorResponse.ErrorResponse('Required fields not provided', 400));
   }
 
   try {
-    const customer = await Customers.findOne({_id: id});
+    const customer = await Customers.findOne({_id: customerId});
     if (!customer) {
-      throw new errorResponse.NotFoundResponse(`customer with id:${id} not found`);
+      throw new errorResponse.NotFoundResponse(`customer with id:${customerId} not found`);
     }
     await customer?.update({
       name,
@@ -90,7 +90,7 @@ export const updateExistingCustomer = async (req: Request, res: Response, next: 
       refUser
     });
 
-    const updatedCustomer = await Customers.findOne({_id: id});
+    const updatedCustomer = await Customers.findOne({_id: customerId});
     res.status(200).json({
       success: true,
       data: {
@@ -104,20 +104,20 @@ export const updateExistingCustomer = async (req: Request, res: Response, next: 
 };
 
 export const deleteExistingCustomer = async (req: Request, res: Response, next: NextFunction) => {
-  const {id} = req.body;
+  const {customerId} = req.body;
   const adminId = req.user._id;
 
-  if (!id) {
+  if (!customerId) {
     return next(new errorResponse.ErrorResponse('Required fields not provided', 400));
   }
 
   try {
-    const customer = await Customers.findById(id);
+    const customer = await Customers.findById(customerId);
     if (!customer) {
-      throw new errorResponse.NotFoundResponse(`customer with id:${id} not found`);
+      throw new errorResponse.NotFoundResponse(`customer with id:${customerId} not found`);
     }
 
-    await d1.deleteMany({adminId, customerId: id});
+    await d1.deleteMany({adminId, customerId: customerId});
     await customer.delete();
 
     res.status(200).json({
