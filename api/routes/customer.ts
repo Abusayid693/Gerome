@@ -7,8 +7,8 @@ customerRouter.route('/all').post(protect, getCustomers);
 
 customerRouter.route('/create').post(protect, addNewCustomer);
 
-customerRouter.route('/update').put(protect, updateExistingCustomer);
+customerRouter.route('/update/:id').put(protect, updateExistingCustomer);
 
-customerRouter.route('/delete').delete(protect, deleteExistingCustomer);
+customerRouter.route('/delete/:id').delete(protect, deleteExistingCustomer);
 
 export default customerRouter;

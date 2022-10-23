@@ -66,4 +66,49 @@ export class d {
       return next(error);
     }
   }
+
+  async delete(req: Request, res: Response, next: NextFunction) {
+    const id = req.params.id;
+
+    if (!id) return next(new errorResponse.ErrorResponse('Required fields not provided', 400));
+
+    try {
+      const result = await this._schema.findById(id);
+      if (!result) throw new errorResponse.NotFoundResponse(`data with id:${id} not found`);
+      await result.delete();
+      res.status(200).json({
+        success: true,
+        data: 'successfully deleted'
+      });
+    } catch (error) {
+      Sentry.captureException(`Error occoured at ${__filename}.delete: ${error}`);
+      return next(error);
+    }
+  }
+
+  async update(req: Request, res: Response, next: NextFunction) {
+    const {reason, details, amount} = req.body;
+    const id = req.params.id;
+
+    if (!id) return next(new errorResponse.ErrorResponse('Required fields not provided', 400));
+
+    try {
+      const result = await this._schema.findById(id);
+      if (!result) {
+        throw new errorResponse.NotFoundResponse(`data with id:${id} not found`);
+      }
+      await result.update({
+        reason,
+        details,
+        amount
+      });
+      res.status(200).json({
+        success: true,
+        data: 'successfully updated'
+      });
+    } catch (error) {
+      Sentry.captureException(`Error occoured at ${__filename}.update: ${error}`);
+      return next(error);
+    }
+  }
 }

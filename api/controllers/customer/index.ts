@@ -72,17 +72,22 @@ export const addNewCustomer = async (req: Request, res: Response, next: NextFunc
   }
 };
 
-export const updateExistingCustomer = async (req: Request, res: Response, next: NextFunction) => {
-  const {customerId, name, email, refUser} = req.body;
+/**
+ * @param req - name, phone, email, refUser
+ * @returns - updates customer in databse
+ */
 
-  if (!customerId) {
+export const updateExistingCustomer = async (req: Request, res: Response, next: NextFunction) => {
+  const {name, email, refUser} = req.body;
+  const id = req.params.id;
+  if (!id) {
     return next(new errorResponse.ErrorResponse('Required fields not provided', 400));
   }
 
   try {
-    const customer = await Customers.findOne({_id: customerId});
+    const customer = await Customers.findById(id);
     if (!customer) {
-      throw new errorResponse.NotFoundResponse(`customer with id:${customerId} not found`);
+      throw new errorResponse.NotFoundResponse(`customer with id:${id} not found`);
     }
     await customer?.update({
       name,
@@ -90,7 +95,7 @@ export const updateExistingCustomer = async (req: Request, res: Response, next: 
       refUser
     });
 
-    const updatedCustomer = await Customers.findOne({_id: customerId});
+    const updatedCustomer = await Customers.findById(id);
     res.status(200).json({
       success: true,
       data: {
@@ -104,20 +109,20 @@ export const updateExistingCustomer = async (req: Request, res: Response, next: 
 };
 
 export const deleteExistingCustomer = async (req: Request, res: Response, next: NextFunction) => {
-  const {customerId} = req.body;
+  const id = req.params.id;
   const adminId = req.user._id;
 
-  if (!customerId) {
+  if (!id) {
     return next(new errorResponse.ErrorResponse('Required fields not provided', 400));
   }
 
   try {
-    const customer = await Customers.findById(customerId);
+    const customer = await Customers.findById(id);
     if (!customer) {
-      throw new errorResponse.NotFoundResponse(`customer with id:${customerId} not found`);
+      throw new errorResponse.NotFoundResponse(`customer with id:${id} not found`);
     }
 
-    await d1.deleteMany({adminId, customerId: customerId});
+    await d1.deleteMany({adminId, customerId: id});
     await customer.delete();
 
     res.status(200).json({
