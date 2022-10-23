@@ -3,6 +3,7 @@ import crypto from 'crypto';
 import {NextFunction, Request, Response} from 'express';
 import jwt from 'jsonwebtoken';
 import {env} from 'process';
+import {Ses} from '../../config/aws';
 import {Customers} from '../../models/Customers';
 import {d1} from '../../models/d1';
 import {User} from '../../models/User';
@@ -229,18 +230,25 @@ exports.forgotPassword = async (req: Request, res: Response, next: NextFunction)
     await user.save();
     const resetUrl = `http://localhost:300/reset/${resetToken}`;
 
-    const message = `
-    <h1> Reset your password now using this link : </h1>
-    <a href=${resetUrl} target="_blank">${resetUrl}</a>
-    `;
+    const params = {
+      Source: 'abusayid693@gmail.com',
+      Destination: {
+        ToAddresses: [email]
+      },
+      Message: {
+        Body: {
+          Text: {
+            Data: resetUrl
+          }
+        },
+        Subject: {
+          Data: 'Test mail'
+        }
+      }
+    };
 
     try {
-      await helpers.sendMail({
-        to: email,
-        subject: 'Reset your password',
-        html: message
-      });
-
+      await Ses.sendEmail(params).promise();
       res.status(200).json({
         success: true,
         data: 'Reset mail sent'
@@ -249,10 +257,11 @@ exports.forgotPassword = async (req: Request, res: Response, next: NextFunction)
       user.resetPasswordToken = undefined;
       user.resetPasswordExpire = undefined;
       await user.save();
-      throw new errorResponse.ErrorResponse('Email sending error', 500);
+      throw new Error(error);
     }
   } catch (error) {
     Sentry.captureException(`Error occoured at ${__filename}.forgotPassword: ${error}`);
+    console.log('[Error] :', error);
     return next(error);
   }
 };
