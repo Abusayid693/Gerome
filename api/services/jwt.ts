@@ -12,7 +12,7 @@ class JwtService {
         expiresIn: env.JWT_EXPIRE,
         issuer: env.JWT_ISSUER,
         audience: env.JWT_AUDIANCE,
-        subject: env.JWT_ACCESS_TYPE
+        subject: 'JWT_ACCESS_TYPE'
       }
     );
 
@@ -29,7 +29,7 @@ class JwtService {
         expiresIn: env.JWT_REFRESH_EXPIRE,
         issuer: env.JWT_ISSUER,
         audience: env.JWT_AUDIANCE,
-        subject: env.JWT_REFRESH_TYPE
+        subject: 'JWT_REFRESH_TYPE'
       }
     );
 

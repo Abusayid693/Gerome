@@ -1,8 +1,6 @@
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
-import jwt from 'jsonwebtoken';
 import mongoose, {Schema} from 'mongoose';
-import {env} from 'process';
 
 interface IUser {
   username: string;
@@ -51,18 +49,6 @@ UserSchema.pre('save', async function (next) {
 
 UserSchema.methods.matchPasswords = async function (password: string) {
   return await bcrypt.compare(password, this?.password);
-};
-
-UserSchema.methods.getSignedToken = function () {
-  return jwt.sign({id: this._id}, env.JWT_SECRET, {
-    expiresIn: env.JWT_EXPIRE
-  });
-};
-
-UserSchema.methods.getSignedRefreshToken = function () {
-  return jwt.sign({id: this._id}, env.JWT_REFRESH_SECRET, {
-    expiresIn: '90d'
-  });
 };
 
 // Need the manually save the changes
