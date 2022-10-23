@@ -13,4 +13,12 @@ router.route('/get/:customerId').post(protect, function (...args) {
   return d2Controller.get(...args);
 });
 
+router.route('/update/:id').post(protect, function (...args) {
+  return d2Controller.update(...args);
+});
+
+router.route('/delete/:id').post(protect, function (...args) {
+  return d2Controller.delete(...args);
+});
+
 export default router;
