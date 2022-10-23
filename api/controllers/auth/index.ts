@@ -7,6 +7,8 @@ import {Ses} from '../../config/aws';
 import {Customers} from '../../models/Customers';
 import {d1} from '../../models/d1';
 import {User} from '../../models/User';
+import jwtService from '../../services/jwt';
+import redisService from '../../services/redis';
 import * as errorResponse from '../../utils/errorResponse';
 import * as helpers from './helpers';
 
@@ -98,6 +100,7 @@ exports.token = async (req: Request, res: Response, next: NextFunction) => {
   }
 
   try {
+    if ((await redisService.get({key: token})) !== '1') throw new errorResponse.NotFoundResponse('Invalid refresh token');
     const decoded = jwt.verify(token, env.JWT_REFRESH_SECRET) as {id: string};
     const user = await User.findById(decoded?.id);
 
@@ -107,7 +110,7 @@ exports.token = async (req: Request, res: Response, next: NextFunction) => {
     res.status(200).json({
       success: true,
       data: {
-        token: user.getSignedToken(),
+        token: jwtService.getAccessToken(user._id as string),
         tokenExpires: env.JWT_EXPIRE
       }
     });
@@ -189,12 +192,16 @@ exports.login = async (req: Request, res: Response, next: NextFunction) => {
       });
     }
 
+    const token = jwtService.getAccessToken(user._id as string);
+    const refreshToken = jwtService.getRefreshToken(user._id as string);
+    await redisService.set({key: refreshToken, value: '1'});
+
     res.status(200).json({
       success: true,
       data: {
-        token: user.getSignedToken(),
+        token,
         tokenExpires: env.JWT_EXPIRE,
-        refreshToken: user.getSignedRefreshToken(),
+        refreshToken,
         user: {...user.toJSON()}
       }
     });

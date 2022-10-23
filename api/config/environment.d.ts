@@ -3,7 +3,13 @@ declare global {
     interface ProcessEnv {
       JWT_SECRET: string;
       JWT_EXPIRE: string;
-      REFRESH_TOKEN_SECRET: string;
+      JWT_REFRESH_EXPIRE: string;
+      JWT_REFRESH_SECRET: string;
+      JWT_ISSUER: string;
+      JWT_AUDIANCE: string;
+      JWT_REFRESH_TYPE: string;
+      JWT_ACCESS_TYPE: string;
+
       AWS_ID: string;
       AWS_SECRET: string;
       NODE_ENV: 'development' | 'production';
