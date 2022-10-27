@@ -5,11 +5,17 @@ export const Container = styled.nav`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+  position: fixed;
+  top: 0;
+  width: calc(100% - 40px);
+  left: 0;
 
-  background-color: #0e1118;
+  background: rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(50px);
   margin: 0;
   padding: 0 20px;
-  border-bottom: 1px solid #151b24;
+  border-bottom: 1.5px solid #151b24;
 
   .navigation-logo {
     display: flex;
