@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 export const Container = styled.div`
   min-height: 100vh;
-  padding-top: 80px;
+  padding-top: 100px;
 
   .hero-header {
     max-width: 1200px;
@@ -19,10 +19,10 @@ export const Container = styled.div`
 
     .hero-header-second {
       font-size: 6rem;
-      // background-image: linear-gradient(to right, #c084fc, #db2777);
-      // -webkit-background-clip: text;
-      // -webkit-text-fill-color: transparent;
-      color: white;
+      background-image: linear-gradient(to right, #c084fc, #db2777);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      // color: white;
 
       margin: 0;
     }
