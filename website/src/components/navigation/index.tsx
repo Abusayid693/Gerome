@@ -18,7 +18,7 @@ export const Navigation = () => {
       <article className="navigation-content">
         <ul className="navigation-button-list">
           <li className="navigation-button-list-item">
-            <ButtonLight>Log in</ButtonLight>
+            <ButtonLight>Get started for free</ButtonLight>
           </li>
         </ul>
 
