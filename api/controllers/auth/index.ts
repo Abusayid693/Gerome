@@ -279,7 +279,9 @@ exports.forgotPassword = async (req: Request, res: Response, next: NextFunction)
 
 exports.resetPassword = async (req: Request, res: Response, next: NextFunction) => {
   const resetPasswordToken = crypto.createHash('sha256').update(req.params.resetToken).digest('hex');
-  if (!resetPasswordToken) return next(new errorResponse.ErrorResponse('Required fields not provided', 400));
+  const {password} = req.body;
+
+  if (!resetPasswordToken || !password) return next(new errorResponse.ErrorResponse('Required fields not provided', 400));
   try {
     const user = await User.findOne({
       resetPasswordToken,
@@ -291,14 +293,14 @@ exports.resetPassword = async (req: Request, res: Response, next: NextFunction) 
         success: false,
         errors: [
           {
-            field: 'email',
-            message: 'email is not registered'
+            field: 'resetToken',
+            message: 'Invalid reset token or expired'
           }
         ]
       });
       return;
     }
-    user.password = req.body.password;
+    user.password = password;
     user.resetPasswordToken = undefined;
     user.resetPasswordExpire = undefined;
     user.save();
