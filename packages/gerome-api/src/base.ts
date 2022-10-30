@@ -8,7 +8,11 @@ export class Services {
   ) {
     this._instance = axios.create({
       baseURL: this._baseURL,
-      headers: this._headers,
+      headers: {
+        ...this._headers,
+        Accept: 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
     });
   }
 }
