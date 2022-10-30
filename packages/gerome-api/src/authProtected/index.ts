@@ -1,4 +1,5 @@
 import { ServicesProtected } from '../baseProtected';
+import * as T from './types';
 
 export class AuthServicesProtected extends ServicesProtected {
   constructor(
@@ -11,6 +12,6 @@ export class AuthServicesProtected extends ServicesProtected {
   }
 
   async me() {
-    return await this._instance.get('/me');
+    return await this._instance.get<T.MeResponse>('/me');
   }
 }
