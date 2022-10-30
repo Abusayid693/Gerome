@@ -3,6 +3,7 @@ dotenv.config({path: './config.env'});
 
 import * as Sentry from '@sentry/node';
 import * as Tracing from '@sentry/tracing';
+import cors from 'cors';
 import express from 'express';
 import fileupload from 'express-fileupload';
 import {connectDB} from './config/db';
@@ -36,6 +37,7 @@ connectDB();
 
 app.use(express.json());
 app.use(fileupload());
+app.use(cors());
 
 app.use('/api/auth', authRouter);
 app.use('/api/customer', customerRouter);
