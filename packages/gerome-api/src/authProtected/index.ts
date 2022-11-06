@@ -6,7 +6,7 @@ export class AuthServicesProtected extends ServicesProtected {
     public refreshToken: string,
     public headers?: Record<string, string>
   ) {
-    super('http://localhost:3000/api/auth/', refreshToken, {
+    super('http://localhost:4000/api/auth/', refreshToken, {
       ...headers,
     });
   }

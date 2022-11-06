@@ -3,7 +3,6 @@ import Link from 'next/link';
 import {ButtonDark, ButtonLight, FieldInput, PasswordInput} from '../../components';
 import initialValues from './FormModal/initialValues';
 import validationSchema from './FormModal/validationSchema';
-// import {AuthServices} from "@abusayid693/gerome-api"
 
 const Index = () => {
   return (
