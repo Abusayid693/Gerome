@@ -6,7 +6,7 @@
     "start": "next start"
   },
   "dependencies": {
-    "@abusayid693/gerome-api": "^0.1.1",
+    "@abusayid693/gerome-api": "^0.1.2",
     "@fortawesome/fontawesome-svg-core": "^6.2.0",
     "@fortawesome/free-brands-svg-icons": "^6.2.0",
     "@fortawesome/free-solid-svg-icons": "^6.2.0",
