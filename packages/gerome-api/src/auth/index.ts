@@ -4,7 +4,7 @@ import * as T from './types';
 
 export class AuthServices extends Services {
   constructor(public headers?: Record<string, string>) {
-    super('http://localhost:4000/api/auth/', headers);
+    super('http://localhost:3000/api/auth/', headers);
   }
 
   async login(body: T.LoginPayload, config?: AxiosRequestConfig<any>) {

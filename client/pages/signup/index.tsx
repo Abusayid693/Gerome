@@ -1,27 +1,36 @@
-import {AuthServices} from '@abusayid693/gerome-api';
 import {faUser} from '@fortawesome/free-solid-svg-icons';
 import {Form, Formik, FormikHelpers} from 'formik';
 import _ from 'lodash';
 import Link from 'next/link';
+import {AuthServices} from '../../../packages/gerome-api';
 import {ButtonDark, ButtonLight, FieldInput, PasswordInput} from '../../components';
+import {useToast} from '../../hooks/useToast';
+import {ErrorFormat} from '../../util';
 import type initialValue from './FormModal/initialValues';
 import initialValues from './FormModal/initialValues';
 import validationSchema from './FormModal/validationSchema';
 
 const Index = () => {
   const api = new AuthServices();
+  const toast = useToast();
 
   const __hanldeFormSubmit = async (values: typeof initialValue, actions: FormikHelpers<typeof initialValue>) => {
     try {
       await api.register(_.omit(values, 'confirmPassword'));
-    } catch (error) {
-      alert(JSON.stringify(error));
+    } catch (error: any) {
+      if (error.response.status !== 500) {
+        const errors = error.response.data.errors;
+        actions.setErrors(ErrorFormat(errors));
+      } else {
+      }
     }
   };
 
   return (
     <div className="border-2 border-slate-300 rounded max-w-lg display-block m-auto p-4">
-      <h2 className="w-full text-center border-b-2 border-b-black pb-2">Sign Up</h2>
+      <h2 onClick={() => toast('ERROR', '')} className="w-full text-center border-b-2 border-b-black pb-2">
+        Sign Up
+      </h2>
       <Formik onSubmit={__hanldeFormSubmit} validationSchema={validationSchema} initialValues={initialValues}>
         <Form>
           <div className="pt-5">
