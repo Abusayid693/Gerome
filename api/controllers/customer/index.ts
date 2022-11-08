@@ -108,6 +108,26 @@ export const updateExistingCustomer = async (req: Request, res: Response, next: 
   }
 };
 
+export const aggregate = async (req: Request, res: Response, next: NextFunction) => {
+  const adminId = req.user._id;
+
+  try {
+    const result = await Customers.aggregate([
+      {$match: {adminId}},
+      {$group: {_id: null, totalToTake: {$sum: '$totalToTake'}, totalToGive: {$sum: '$totalToGive'}}}
+    ]);
+    res.status(200).json({
+      success: true,
+      data: {
+        aggregate: result
+      }
+    });
+  } catch (error) {
+    Sentry.captureException(`Error occoured at ${__filename}.aggregate: ${error}`);
+    return next(error);
+  }
+};
+
 export const deleteExistingCustomer = async (req: Request, res: Response, next: NextFunction) => {
   const id = req.params.id;
   const adminId = req.user._id;
