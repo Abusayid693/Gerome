@@ -7,6 +7,7 @@ import {AuthContext} from '../../hooks/useAuth';
 import {COOKIE} from '../../util/cookie';
 
 export const AuthProvider: React.FC<{children: React.ReactNode}> = ({children}) => {
+  // [TODO] : take a look into react-query cache for current user
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [cookies, setCookie] = useCookies([COOKIE]);
   const router = useRouter();
