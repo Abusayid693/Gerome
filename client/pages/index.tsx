@@ -1,8 +1,17 @@
 import type {NextPage} from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
+import {useAuth} from '../hooks/useAuth';
 
 const Home: NextPage = () => {
+  const auth = useAuth();
+  if (auth.isAuthenticating) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center py-2">
+        <h1>Loading...</h1>
+      </div>
+    );
+  }
   return (
     <div className="flex min-h-screen flex-col items-center justify-center py-2">
       <Head>
