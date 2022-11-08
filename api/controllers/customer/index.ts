@@ -119,7 +119,8 @@ export const aggregate = async (req: Request, res: Response, next: NextFunction)
     res.status(200).json({
       success: true,
       data: {
-        aggregate: result
+        totalToTake: result?.[0].totalToTake,
+        totalToGive: result?.[0].totalToGive
       }
     });
   } catch (error) {
