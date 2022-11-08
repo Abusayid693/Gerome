@@ -16,7 +16,9 @@
     "fortawesome": "^0.0.1-security",
     "next": "latest",
     "react": "18.2.0",
+    "react-cookie": "^4.1.1",
     "react-dom": "18.2.0",
+    "react-query": "^3.39.2",
     "yup": "^0.32.11"
   },
   "devDependencies": {

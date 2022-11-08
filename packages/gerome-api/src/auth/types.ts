@@ -1,4 +1,4 @@
-import { Error } from '../baseTypes';
+import { Error, User } from '../baseTypes';
 
 export interface LoginPayload {
   email: string;
@@ -11,6 +11,7 @@ export interface LoginResponse {
     token: string;
     tokenExpires: string;
     refreshToken: string;
+    user: User;
   };
   errors: Error;
 }

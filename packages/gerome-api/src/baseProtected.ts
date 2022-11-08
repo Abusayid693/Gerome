@@ -24,6 +24,7 @@ export class ServicesProtected {
         /**
          * Skip loop
          */
+        console.log('config.url :', config.url);
         if (config.url === '/token') return config;
         try {
           const { data }: any = await this._instance.get('/token', {
@@ -41,7 +42,8 @@ export class ServicesProtected {
           /**
            * if refresh token is thorwing error logout user
            */
-          window.location.replace('/404');
+          window.location.replace('/login');
+          console.log('api error:', window.location);
         }
 
         return config;

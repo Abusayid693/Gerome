@@ -22,6 +22,7 @@ const Index = () => {
         const errors = error.response.data.errors;
         actions.setErrors(ErrorFormat(errors));
       } else {
+        toast('ERROR', 'Login error');
       }
     }
   };
