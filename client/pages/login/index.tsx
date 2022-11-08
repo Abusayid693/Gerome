@@ -37,7 +37,7 @@ const Index = () => {
     <div className="border-2 border-slate-300 rounded max-w-lg display-block m-auto p-4">
       <h2 className="w-full text-center border-b-2 border-b-black pb-2">Sign Up</h2>
       <Formik onSubmit={__hanldeFormSubmit} validationSchema={validationSchema} initialValues={initialValues}>
-        {({isSubmitting, setFieldValue, values, touched}) => {
+        {({isSubmitting}) => {
           return (
             <Form>
               <div className="pt-5">

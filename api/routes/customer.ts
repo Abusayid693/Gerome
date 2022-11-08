@@ -1,9 +1,11 @@
 import express from 'express';
-import {addNewCustomer, deleteExistingCustomer, getCustomers, updateExistingCustomer} from '../controllers/customer';
+import {addNewCustomer, aggregate, deleteExistingCustomer, getCustomers, updateExistingCustomer} from '../controllers/customer';
 import {protect} from '../middlewares/auth';
 const customerRouter = express.Router();
 
 customerRouter.route('/all').post(protect, getCustomers);
+
+customerRouter.route('/aggregate').get(protect, aggregate);
 
 customerRouter.route('/create').post(protect, addNewCustomer);
 

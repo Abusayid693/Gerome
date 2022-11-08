@@ -7,6 +7,6 @@ const options = {
 
 export const connectDB = async () => {
   // @ts-ignore
-  await mongoose.connect('mongodb://localhost:27017/gerome', options);
+  await mongoose.connect('mongodb://localhost:27017/demo-data-gerome-1', options);
   console.log('[Running]: Database successfully connected');
 };

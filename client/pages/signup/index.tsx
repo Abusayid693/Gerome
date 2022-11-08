@@ -33,24 +33,28 @@ const Index = () => {
         Sign Up
       </h2>
       <Formik onSubmit={__hanldeFormSubmit} validationSchema={validationSchema} initialValues={initialValues}>
-        <Form>
-          <div className="pt-5">
-            <FieldInput name="username" placeholder="Username" iconRight={faUser} />
-            <FieldInput name="email" placeholder="Email" />
-            <PasswordInput name="password" placeholder="Password" />
-            <PasswordInput name="confirmPassword" placeholder="Confirm Password" />
-            <ButtonDark>Sign Up</ButtonDark>
-            <p className="pt-2 text-black text-xs opacity-7">By signing up, you agree to the Terms of Service and Privacy Policy</p>
-            <div className="py-2 flex flex-row gap-2 items-center text-sm text-gray-700">
-              <hr className="w-full" />
-              OR
-              <hr className="w-full" />
-            </div>
-            <Link href={'/login'}>
-              <ButtonLight>Sign In</ButtonLight>
-            </Link>
-          </div>
-        </Form>
+        {({isSubmitting}) => {
+          return (
+            <Form>
+              <div className="pt-5">
+                <FieldInput name="username" placeholder="Username" iconRight={faUser} />
+                <FieldInput name="email" placeholder="Email" />
+                <PasswordInput name="password" placeholder="Password" />
+                <PasswordInput name="confirmPassword" placeholder="Confirm Password" />
+                <ButtonDark isLoading={isSubmitting}>Sign Up</ButtonDark>
+                <p className="pt-2 text-black text-xs opacity-7">By signing up, you agree to the Terms of Service and Privacy Policy</p>
+                <div className="py-2 flex flex-row gap-2 items-center text-sm text-gray-700">
+                  <hr className="w-full" />
+                  OR
+                  <hr className="w-full" />
+                </div>
+                <Link href={'/login'}>
+                  <ButtonLight>Sign In</ButtonLight>
+                </Link>
+              </div>
+            </Form>
+          );
+        }}
       </Formik>
     </div>
   );
