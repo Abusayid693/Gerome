@@ -25,7 +25,7 @@ export const AuthProvider: React.FC<{children: React.ReactNode}> = ({children}) 
       refetchOnReconnect: false,
       retry: 0,
       retryDelay: 3000,
-      enabled: router.pathname !== '/login' || !currentUser
+      enabled: router.pathname !== '/login' && !currentUser
     }
   );
 
