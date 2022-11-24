@@ -33,7 +33,10 @@ Sentry.init({
 app.use(Sentry.Handlers.requestHandler());
 app.use(Sentry.Handlers.tracingHandler());
 
-connectDB();
+connectDB().catch(error => {
+  console.log(`[Error]: unhandled rejection Error : ${error}`);
+  Sentry.captureException(`Error occoured at ${__filename}.connectDB: ${error}`);
+});
 
 app.use(express.json());
 app.use(fileupload());
