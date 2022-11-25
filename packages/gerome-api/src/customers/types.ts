@@ -44,7 +44,6 @@ export interface CreateResponse {
   errors: Error;
 }
 
-
 export interface UpdatePayload {
   name?: string;
   phone?: string;

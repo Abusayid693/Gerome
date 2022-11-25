@@ -22,7 +22,15 @@ export class CustomerServicesProtected extends ServicesProtected {
   async create(body: T.CreatePayload, config?: AxiosRequestConfig<any>) {
     return await this._instance.post<T.CreateResponse>('/create', body, config);
   }
-  async update(body: T.UpdatePayload,id:string ,config?: AxiosRequestConfig<any>){
-    return await this._instance.post<T.UpdateResponse>(`/update/:id?id=${id}`, body, config)
+  async update(
+    body: T.UpdatePayload,
+    id: string,
+    config?: AxiosRequestConfig<any>
+  ) {
+    return await this._instance.post<T.UpdateResponse>(
+      `/update/:id?id=${id}`,
+      body,
+      config
+    );
   }
 }

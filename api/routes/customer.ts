@@ -1,6 +1,6 @@
 import express from 'express';
-import { addNewCustomer, aggregate, deleteExistingCustomer, getCustomerById, getCustomers, updateExistingCustomer } from '../controllers/customer';
-import { protect } from '../middlewares/auth';
+import {addNewCustomer, aggregate, deleteExistingCustomer, getCustomerById, getCustomers, updateExistingCustomer} from '../controllers/customer';
+import {protect} from '../middlewares/auth';
 const customerRouter = express.Router();
 
 customerRouter.route('/all').post(protect, getCustomers);
