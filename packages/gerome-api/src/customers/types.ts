@@ -1,3 +1,5 @@
+import { Error } from '../baseTypes';
+
 export interface Customer {
   _id: string;
   adminId: string;
@@ -24,5 +26,35 @@ export interface AggregateResponse {
   data: {
     totalToTake: number;
     totalToGive: number;
+  };
+}
+
+export interface CreatePayload {
+  name: string;
+  phone?: string;
+  email?: string;
+  refUser?: string;
+}
+
+export interface CreateResponse {
+  success: boolean;
+  data: {
+    customer: Customer;
+  };
+  errors: Error;
+}
+
+export interface UpdatePayload {
+  name?: string;
+  phone?: string;
+  email?: string;
+  refUser?: string;
+}
+
+export interface UpdateResponse {
+  success: boolean;
+  errors: Error;
+  data: {
+    customer: Customer;
   };
 }

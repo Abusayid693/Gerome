@@ -25,13 +25,19 @@ export class ServicesProtected {
          * Skip loop
          */
         console.log('config.url :', config.url);
-        if (config.url === '/token') return config;
+        if (config.url === 'http://localhost:4000/api/auth/token')
+          return config;
         try {
-          const { data }: any = await this._instance.get('/token', {
-            headers: {
-              refresh: 'Bearer ' + this._refreshToken,
-            },
-          });
+          const { data }: any = await this._instance.get(
+            'http://localhost:4000/api/auth/token',
+            {
+              headers: {
+                refresh: 'Bearer ' + this._refreshToken,
+              },
+            }
+          );
+
+          console.log('refrsh :', this._refreshToken);
 
           const access_token = data?.data?.token;
           config.headers = {
