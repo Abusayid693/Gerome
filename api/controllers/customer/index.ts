@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/node';
-import {NextFunction, Request, Response} from 'express';
-import {Customers} from '../../models/Customers';
-import {d1} from '../../models/d1';
+import { NextFunction, Request, Response } from 'express';
+import { Customers } from '../../models/Customers';
+import { d1 } from '../../models/d1';
 import * as errorResponse from '../../utils/errorResponse';
 import * as helpers from './helpers';
 
@@ -13,16 +13,17 @@ import * as helpers from './helpers';
 export const getCustomers = async (req: Request, res: Response, next: NextFunction) => {
   const {limit = 50, offset = 0} = req.body;
   const adminId = req.user._id;
+  console.log('I am getting hit')
 
   try {
+    // [TODO]: optimize response by sending only required customer data
     const customers = await Customers.find({adminId}).skip(offset).limit(limit);
-    const total = await Customers.find({adminId}).count();
 
     res.status(201).json({
       success: true,
       data: {
         customers: [...customers],
-        total
+        total: customers.length
       }
     });
   } catch (error) {
@@ -30,6 +31,33 @@ export const getCustomers = async (req: Request, res: Response, next: NextFuncti
     next(error);
   }
 };
+
+/**
+ * @param req - id
+ * @returns - customer details for given id
+ */
+
+export const getCustomerById = async  (req: Request, res: Response, next: NextFunction) =>{
+  const id = req.params.id;
+  if (!id) {
+    return next(new errorResponse.ErrorResponse('Required fields not provided', 400));
+  }
+  try {
+    const customer = await Customers.findById(id)
+    if (!customer) {
+      throw new errorResponse.NotFoundResponse(`customer with id:${id} not found`);
+    }
+    res.status(201).json({
+      success: true,
+      data: {
+        customer
+      }
+    });
+  } catch (error) {
+    Sentry.captureException(`Error occoured at ${__filename}.getCustomerById: ${error}`);
+    next(error);
+  }
+}
 
 /**
  * @param req - name, phone, email, refUser
