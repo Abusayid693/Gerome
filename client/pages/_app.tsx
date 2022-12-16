@@ -6,6 +6,9 @@ import {QueryClient, QueryClientProvider} from 'react-query';
 import {AuthProvider} from '../context/auth';
 import {ToastProvider} from '../context/toast';
 import '../styles/globals.css';
+
+import {LargeNav} from '../components/nav';
+
 config.autoAddCss = false;
 
 const queryClient = new QueryClient();
@@ -16,6 +19,7 @@ function MyApp({Component, pageProps}: AppProps) {
       <CookiesProvider>
         <AuthProvider>
           <ToastProvider>
+            <LargeNav />
             <Component {...pageProps} />
           </ToastProvider>
         </AuthProvider>
