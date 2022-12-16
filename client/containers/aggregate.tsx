@@ -31,28 +31,28 @@ export const Aggregate = () => {
     <div>
       {isLoading && <p>Loading...</p>}
       {/* <p>{JSON.stringify(data?.data.customers)}</p> */}
-      <div className="border-2 rounded shadow border-grey-500 p-5">
+      <div className="border bg-white rounded shadow border-grey-2 p-5">
         <div className="mb-5">
-          <h4 className="text-xl font-medium">Aggregate amount</h4>
+          <h4 className="text-xl font-medium text-grey-5">Aggregate amount</h4>
         </div>
-        <span className="text-4xl font-light text-slate-600">$ 45 rupees</span>
+        <span className="text-4xl font-thin text-grey-4">$ 45 rupees</span>
         <span className="block text-slate-500">positive</span>
       </div>
-      <p className="my-4 text-md ">Insights</p>
-      <div className="border-2 mb-3 rounded shadow border-grey-500 p-5">
+      <p className="my-4  text-md ">Insights</p>
+      <div className="border bg-white mb-3 rounded shadow border-grey-2 p-5">
         <div className="mb-6">
           <h4 className="text-xl font-medium">Money in</h4>
         </div>
-        <span className="text-2xl font-medium text-slate-600">$ {data?.data.totalToTake} rupees</span>
-        <span className="block text-slate-500">positive</span>
+        <span className="text-2xl font-medium text-slate-600">$ {data?.data.totalToTake}</span>
+        <span className="block text-grey-3">positive</span>
       </div>
 
-      <div className="border-2 rounded shadow border-grey-500 p-5">
+      <div className="border bg-white rounded shadow border-grey-2 p-5">
         <div className="mb-6">
           <h4 className="text-xl font-medium">Money out</h4>
         </div>
-        <span className="text-2xl font-medium text-slate-600">$ {data?.data.totalToGive} rupees</span>
-        <span className="block text-slate-500">positive</span>
+        <span className="text-2xl font-medium text-slate-600">$ {data?.data.totalToGive}</span>
+        <span className="block text-grey-3">positive</span>
       </div>
     </div>
   );
