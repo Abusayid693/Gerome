@@ -1,4 +1,5 @@
-import {Main} from '../containers/main';
+import {Aggregate} from '../containers/aggregate';
+import {Customers} from '../containers/customers';
 import {useAuth} from '../hooks/useAuth';
 
 const Home = () => {
@@ -11,8 +12,13 @@ const Home = () => {
     );
   } else if (auth.isAuthenticated()) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center py-2">
-        <Main />
+      <div className="flex max-w-screen-2xl m-auto gap-3 min-h-screen flex-row items-start justify-between py-2">
+        <div className="w-1/2">
+          <Aggregate />
+        </div>
+        <div className="w-full">
+          <Customers />
+        </div>
       </div>
     );
   }

@@ -4,7 +4,7 @@ import {useQuery} from 'react-query';
 import {CustomerServicesProtected} from '../../packages/gerome-api';
 import {COOKIE} from '../util/cookie';
 
-export const Main = () => {
+export const Customers = () => {
   const [cookies] = useCookies([COOKIE]);
 
   const api = React.useMemo(() => {
@@ -30,7 +30,8 @@ export const Main = () => {
   return (
     <div>
       {isLoading && <p>Loading...</p>}
-      <p>{JSON.stringify(data?.data.customers)}</p>
+      {/* <p>{JSON.stringify(data?.data.customers)}</p> */}
+      <p>Customers</p>
     </div>
   );
 };

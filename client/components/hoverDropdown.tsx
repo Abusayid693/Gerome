@@ -12,7 +12,7 @@ export const HoverDropdown = () => {
           onMouseEnter={setOpen}
           className={clsx(
             'bg-blue-900 text-white font-semibold text-lg font-light py-2 px-4 rounded flex gap-2 items-center',
-            isOpen && 'bg-blue-700'
+            isOpen && 'bg-blue-800'
           )}
         >
           <FontAwesomeIcon icon={faUser} />
