@@ -12,12 +12,14 @@ const Home = () => {
     );
   } else if (auth.isAuthenticated()) {
     return (
-      <div className="flex max-w-screen-2xl m-auto gap-3 min-h-screen flex-row items-start justify-between py-2">
-        <div className="w-1/2">
-          <Aggregate />
-        </div>
-        <div className="w-full">
-          <Customers />
+      <div className="bg-grey-1">
+        <div className="flex max-w-screen-2xl m-auto gap-3 min-h-screen flex-row items-start justify-between py-2">
+          <div className="w-1/2">
+            <Aggregate />
+          </div>
+          <div className="w-full">
+            <Customers />
+          </div>
         </div>
       </div>
     );

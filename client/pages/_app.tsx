@@ -7,7 +7,7 @@ import {AuthProvider} from '../context/auth';
 import {ToastProvider} from '../context/toast';
 import '../styles/globals.css';
 
-import {LargeNav} from '../components/nav';
+import {SmallNav} from '../components/nav';
 
 config.autoAddCss = false;
 
@@ -19,7 +19,8 @@ function MyApp({Component, pageProps}: AppProps) {
       <CookiesProvider>
         <AuthProvider>
           <ToastProvider>
-            <LargeNav />
+            <SmallNav />
+            <div className="w-screen h-20 bg-grey-1" />
             <Component {...pageProps} />
           </ToastProvider>
         </AuthProvider>

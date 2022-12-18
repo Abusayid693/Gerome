@@ -28,10 +28,27 @@ export const Customers = () => {
   );
 
   return (
-    <div>
-      {isLoading && <p>Loading...</p>}
-      {/* <p>{JSON.stringify(data?.data.customers)}</p> */}
-      <p>Customers</p>
+    <div className="border bg-white rounded shadow border-grey-2 p-5">
+      {isLoading ? (
+        <p>Loading...</p>
+      ) : (
+        <>
+          <div className="mb-5">
+            <h4 className="text-xl font-medium text-grey-5">Customers</h4>
+          </div>
+
+          <div>
+            <ul className="flex flex-row gap-5">
+              {data?.data?.customers?.map(customer => (
+                <li className="text-center cursor-pointer">
+                  <div className="w-12 h-12 flex items-center text-lg uppercase justify-center bg-grey-1 rounded-full">{customer.name[0]}</div>
+                  {customer.name}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </>
+      )}
     </div>
   );
 };
