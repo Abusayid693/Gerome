@@ -11,12 +11,12 @@ export const HoverDropdown = () => {
         <button
           onMouseEnter={setOpen}
           className={clsx(
-            'bg-blue-900 text-white font-semibold text-lg font-light py-2 px-4 rounded flex gap-2 items-center',
+            'bg-blue-900 text-white font-semibold text-md font-light py-2 px-4 rounded flex gap-2 items-center',
             isOpen && 'bg-blue-800'
           )}
         >
           <FontAwesomeIcon icon={faUser} />
-          <span className="mr-1 font-light">Abu Sayid Md Nowman</span>
+          <span className="mr-1 font-light tex-md">Abu Sayid Md Nowman</span>
         </button>
         {isOpen && (
           <ul className="dropdown-menu bg-blue-800 absolute top-full left-0 text-white pt-1">

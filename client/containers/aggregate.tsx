@@ -12,7 +12,7 @@ export const Aggregate = () => {
   }, [cookies]);
 
   const {data, isLoading} = useQuery(
-    'customers',
+    'aggregate',
     async () => {
       const {data} = await api.aggregate();
       return data;
