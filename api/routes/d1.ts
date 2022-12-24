@@ -1,7 +1,7 @@
 import express from 'express';
 import d1Controller from '../controllers/d1/d1';
 
-import {protect} from '../middlewares/auth';
+import { protect } from '../middlewares/auth';
 
 const router = express.Router();
 

@@ -1,10 +1,9 @@
 import cli from 'cli-color';
 import mongoose from 'mongoose';
 import readline from 'readline';
-import {Customers} from '../../models/Customers';
-import {d1} from '../../models/d1';
-import {d2} from '../../models/d2';
-import {User} from '../../models/User';
+import { Customers } from '../../models/Customers';
+import { d1, D1, D2 } from '../../models/d1';
+import { User } from '../../models/User';
 
 //--------
 import customersData from './data/customers.json';
@@ -18,7 +17,7 @@ const options = {
 };
 
 const connectDB = async () => {
-  await mongoose.connect('mongodb://localhost:27017/demo-data-gerome-1', options as any);
+  await mongoose.connect('mongodb://localhost:27017/demo-data-gerome-3', options as any);
   console.log(cli.green('[Running]: Database successfully connected'));
 };
 
@@ -62,20 +61,22 @@ const userInput = (query: any) => {
         const customerEntry = await Customers.create({...customersData[j], adminId: userEntry.toJSON()._id.toString()});
         for (let k = 2 * j; k < 2 * j + 2; k++) {
           await d1.create({
-            ...d1Data[j],
+            ...d1Data[k],
             adminId: userEntry.toJSON()._id.toString(),
-            customerId: customerEntry.toJSON()._id.toString()
+            customerId: customerEntry.toJSON()._id.toString(),
+            type: D1
           });
 
-          await customerEntry.update({$inc: {['totalToTake']: d1Data[j].amount}});
+          await customerEntry.update({$inc: {['totalToTake']: d1Data[k].amount}});
 
-          await d2.create({
-            ...d2Data[j],
+          await d1.create({
+            ...d2Data[k],
             adminId: userEntry.toJSON()._id.toString(),
-            customerId: customerEntry.toJSON()._id.toString()
+            customerId: customerEntry.toJSON()._id.toString(),
+            type: D2
           });
 
-          await customerEntry.update({$inc: {['totalToGive']: d2Data[j].amount}});
+          await customerEntry.update({$inc: {['totalToGive']: d2Data[k].amount}});
         }
       }
     }
