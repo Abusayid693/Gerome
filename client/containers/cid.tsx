@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { MenuSelector } from '../components/menuSelector';
+import {useState} from 'react';
+import {MenuSelector} from '../components/menuSelector';
 
 export const Cid = () => {
   const [selectorIndex, setSelectorIndex] = useState(0);

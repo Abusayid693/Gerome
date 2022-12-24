@@ -1,9 +1,9 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, {Schema} from 'mongoose';
 
-export const D1 = 'totalToTake'
-export const D2 = 'totalToGive'
+export const D1 = 'totalToTake';
+export const D2 = 'totalToGive';
 
-export type D = typeof D1 | typeof D2
+export type D = typeof D1 | typeof D2;
 
 interface SchemaType {
   _id: string;
@@ -18,7 +18,7 @@ interface SchemaType {
   reason: string;
   details: string[];
   amount: string;
-  type: D
+  type: D;
 }
 
 export const d1Schema: Schema = new Schema<SchemaType>(
@@ -47,15 +47,11 @@ export const d1Schema: Schema = new Schema<SchemaType>(
       type: [String],
       default: []
     },
-    type:{
+    type: {
       type: String,
       required: [true, 'type is required'],
-      match: [
-        /totalToTake|totalToGive/,
-        'Please fill a valid type in d1Schema'
-      ],
-    },
-    
+      match: [/totalToTake|totalToGive/, 'Please fill a valid type in d1Schema']
+    }
   },
   {
     timestamps: true

@@ -1,9 +1,9 @@
 import cli from 'cli-color';
 import mongoose from 'mongoose';
 import readline from 'readline';
-import { Customers } from '../../models/Customers';
-import { d1, D1, D2 } from '../../models/d1';
-import { User } from '../../models/User';
+import {Customers} from '../../models/Customers';
+import {d1, D1, D2} from '../../models/d1';
+import {User} from '../../models/User';
 
 //--------
 import customersData from './data/customers.json';

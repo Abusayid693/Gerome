@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/node';
-import { NextFunction, Request, Response } from 'express';
-import { Customers } from '../../models/Customers';
-import { d1, D1, D2 } from '../../models/d1';
+import {NextFunction, Request, Response} from 'express';
+import {Customers} from '../../models/Customers';
+import {d1, D1, D2} from '../../models/d1';
 import * as errorResponse from '../../utils/errorResponse';
 
 export class d {
@@ -65,7 +65,10 @@ export class d {
     }
 
     try {
-      const result = await d1.find({adminId, customerId, type}).skip(offset * limit).limit(limit);
+      const result = await d1
+        .find({adminId, customerId, type})
+        .skip(offset * limit)
+        .limit(limit);
       res.status(200).json({
         success: true,
         data: {
@@ -81,14 +84,17 @@ export class d {
   async recent(req: Request, res: Response, next: NextFunction) {
     const adminId = req.user._id;
     const customerId = req.params.customerId;
-    const { offset=0, limit = 10} = req.body;
+    const {offset = 0, limit = 10} = req.body;
 
     if (!customerId) {
       return next(new errorResponse.ErrorResponse('Required fields not provided', 400));
     }
 
     try {
-      const result = await d1.find({adminId, customerId}).skip(offset * limit).limit(limit);
+      const result = await d1
+        .find({adminId, customerId})
+        .skip(offset * limit)
+        .limit(limit);
       res.status(200).json({
         success: true,
         data: {
