@@ -13,14 +13,14 @@ export class D1ServicesProtected extends ServicesProtected {
 
   async getByTakeSnapshot(customerId: string, body: T.GetPayload) {
     return await this._instance.post<T.GetResponse>(
-      `/get/:customerId?customerId=${customerId}`,
+      `/get/${customerId}`,
       { ...body, type: 'totalToTake' }
     );
   }
 
   async getByGiveSnapshot(customerId: string, body: T.GetPayload) {
     return await this._instance.post<T.GetResponse>(
-      `/get/:customerId?customerId=${customerId}`,
+      `/get/${customerId}`,
       { ...body, type: 'totalToGive' }
     );
   }
@@ -41,14 +41,14 @@ export class D1ServicesProtected extends ServicesProtected {
 
   async recent(customerId: string, body: T.GetPayload) {
     return await this._instance.post<T.GetResponse>(
-      `/recent/:customerId?customerId=${customerId}`,
+      `/recent/${customerId}`,
       body
     );
   }
 
-  async update(customerId: string, body: T.UpdatePayload) {
+  async update(id: string, body: T.UpdatePayload) {
     return await this._instance.post<T.UpdateResponse>(
-      `/update/:id?id=${customerId}`,
+      `/update/${id}`,
       body
     );
   }
