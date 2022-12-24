@@ -65,7 +65,30 @@ export class d {
     }
 
     try {
-      const result = await d1.find({adminId, customerId, type});
+      const result = await d1.find({adminId, customerId, type}).skip(offset * limit).limit(limit);
+      res.status(200).json({
+        success: true,
+        data: {
+          result: [...result]
+        }
+      });
+    } catch (error) {
+      Sentry.captureException(`Error occoured at ${__filename}.get: ${error}`);
+      return next(error);
+    }
+  }
+
+  async recent(req: Request, res: Response, next: NextFunction) {
+    const adminId = req.user._id;
+    const customerId = req.params.customerId;
+    const { offset=0, limit = 10} = req.body;
+
+    if (!customerId) {
+      return next(new errorResponse.ErrorResponse('Required fields not provided', 400));
+    }
+
+    try {
+      const result = await d1.find({adminId, customerId}).skip(offset * limit).limit(limit);
       res.status(200).json({
         success: true,
         data: {
