@@ -1,0 +1,1 @@
+1. [React-query Updates from Mutation Responses](https://tanstack.com/query/v4/docs/guides/updates-from-mutation-responses?from=reactQueryV3&original=https://react-query-v3.tanstack.com/guides/updates-from-mutation-responses)
