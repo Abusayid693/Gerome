@@ -144,7 +144,10 @@ export class d {
       });
       res.status(200).json({
         success: true,
-        data: 'successfully updated'
+        data: {
+          result: result,
+          message: 'successfully updated'
+        }
       });
     } catch (error) {
       Sentry.captureException(`Error occoured at ${__filename}.update: ${error}`);
