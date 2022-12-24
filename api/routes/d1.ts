@@ -13,6 +13,9 @@ router.route('/get/:customerId').post(protect, function (...args) {
   return d1Controller.get(...args);
 });
 
+router.route('/recent/:customerId').post(protect, function (...args) {
+  return d1Controller.recent(...args);
+});
 router.route('/update/:id').post(protect, function (...args) {
   return d1Controller.update(...args);
 });
