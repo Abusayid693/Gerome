@@ -55,7 +55,7 @@ const Index = () => {
                 <FieldInput name="email" />
                 <PasswordInput name="password" />
                 <ButtonDark isLoading={isSubmitting} type="submit">
-                  Sign In
+                  {process.env.NEXTAUTH_URL}
                 </ButtonDark>
                 <p className="pt-2 text-black text-xs opacity-7">By logging in, you agree to the Terms of Service and Privacy Policy</p>
                 <div className="py-2 flex flex-row gap-2 items-center text-sm text-gray-700">
@@ -71,6 +71,7 @@ const Index = () => {
           );
         }}
       </Formik>
+      {/* <ButtonLight onClick={ () => signIn()}>next auth</ButtonLight> */}
     </div>
   );
 };

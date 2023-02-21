@@ -12,17 +12,17 @@ export class D1ServicesProtected extends ServicesProtected {
   }
 
   async getByTakeSnapshot(customerId: string, body: T.GetPayload) {
-    return await this._instance.post<T.GetResponse>(
-      `/get/${customerId}`,
-      { ...body, type: 'totalToTake' }
-    );
+    return await this._instance.post<T.GetResponse>(`/get/${customerId}`, {
+      ...body,
+      type: 'totalToTake',
+    });
   }
 
   async getByGiveSnapshot(customerId: string, body: T.GetPayload) {
-    return await this._instance.post<T.GetResponse>(
-      `/get/${customerId}`,
-      { ...body, type: 'totalToGive' }
-    );
+    return await this._instance.post<T.GetResponse>(`/get/${customerId}`, {
+      ...body,
+      type: 'totalToGive',
+    });
   }
 
   async createByTakeSnapshot(body: T.CreatePayload) {
@@ -47,9 +47,6 @@ export class D1ServicesProtected extends ServicesProtected {
   }
 
   async update(id: string, body: T.UpdatePayload) {
-    return await this._instance.post<T.UpdateResponse>(
-      `/update/${id}`,
-      body
-    );
+    return await this._instance.post<T.UpdateResponse>(`/update/${id}`, body);
   }
 }

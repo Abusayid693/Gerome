@@ -5,7 +5,7 @@ import Link from 'next/link';
 import {useRouter} from 'next/router';
 import {useEffect} from 'react';
 import {useCookies} from 'react-cookie';
-import {AuthServices} from '../../../packages/gerome-api';
+import {AuthServices} from '../../../packages/gerome-api/dist';
 import {ButtonDark, ButtonLight, FieldInput, PasswordInput} from '../../components';
 import {useToast} from '../../hooks/useToast';
 import {ErrorFormat} from '../../util';

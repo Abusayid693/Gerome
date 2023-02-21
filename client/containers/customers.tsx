@@ -1,3 +1,4 @@
+import {useRouter} from 'next/router';
 import React from 'react';
 import {useCookies} from 'react-cookie';
 import {useQuery} from 'react-query';
@@ -6,6 +7,7 @@ import {COOKIE} from '../util/cookie';
 
 export const Customers = () => {
   const [cookies] = useCookies([COOKIE]);
+  const router = useRouter();
 
   const api = React.useMemo(() => {
     return new CustomerServicesProtected(cookies.GEROME_COOKIE);
@@ -40,7 +42,7 @@ export const Customers = () => {
           <div>
             <ul className="flex flex-row gap-5">
               {data?.data?.customers?.map(customer => (
-                <li className="text-center cursor-pointer">
+                <li onClick={() => router.push(`/customer/${customer._id}`)} className="text-center cursor-pointer">
                   <div className="w-12 h-12 flex items-center text-lg uppercase justify-center bg-grey-1 rounded-full">{customer.name[0]}</div>
                   {customer.name}
                 </li>

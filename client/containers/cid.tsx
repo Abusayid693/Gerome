@@ -1,5 +1,6 @@
 import {useState} from 'react';
 import {MenuSelector} from '../components/menuSelector';
+import {Recent} from './recent';
 
 export const Cid = () => {
   const [selectorIndex, setSelectorIndex] = useState(0);
@@ -9,6 +10,9 @@ export const Cid = () => {
         <div className="max-w-screen-2xl m-auto">
           <MenuSelector activeIndex={selectorIndex} setActiveIndex={(index: number) => setSelectorIndex(index)} />
         </div>
+      </div>
+      <div className="max-w-screen-2xl m-auto">
+        <Recent />
       </div>
     </div>
   );

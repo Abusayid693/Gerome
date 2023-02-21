@@ -11,6 +11,7 @@ export const AuthProvider: React.FC<{children: React.ReactNode}> = ({children}) 
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [cookies, setCookie] = useCookies([COOKIE]);
   const router = useRouter();
+  console.log('cookies :', cookies);
   const api = useMemo(() => {
     return new AuthServicesProtected(cookies.GEROME_COOKIE);
   }, [cookies]);
